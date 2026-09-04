@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('token');
             $table->dateTime('used_at')->nullable();
+            $table->date('expired_at');
             $table->timestamps();
         });
     }

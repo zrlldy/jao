@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ApplicationInvitationRequest;
 use App\Models\ApplicationInvitation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
+use function Symfony\Component\Clock\now;
 
 class ApplicationInvitationController extends Controller
 {
@@ -18,9 +23,20 @@ class ApplicationInvitationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ApplicationInvitationRequest $request)
     {
-        //
+        $data = $request->validated();
+        $token =  Str::random(64);
+
+        $invitation = ApplicationInvitation::create([
+            'job_hiring_id' => $data['job_hiring_id'],
+            'email' => $data['email'],
+            'token' => hash('sha256', $token),
+            'expired_at' => Carbon::now()->addDays(7),
+        ]);
+        return response()->json([
+            'message' => 'Invitation sent to applicant'
+        ]);
     }
 
     /**
