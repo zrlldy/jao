@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class ApplicationAnswer extends Model
+{
+    use HasUuids;
+
+    protected $guarded = [];
+
+    public function application(): BelongsTo
+    {
+        return $this->belongsTo(Application::class);
+    }
+
+    public function formField(): BelongsTo
+    {
+        return $this->belongsTo(FormField::class);
+    }
+}
