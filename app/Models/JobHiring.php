@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,9 +11,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JobHiring extends Model
 {
-    use HasUuids;
+    use HasUuids, HasFactory;
 
     protected $guarded = [];
+    protected $casts = [
+        // 'is_active' => 'boolean',
+        'published_at' => 'datetime',
+        // 'closed_at' => 'datetime',
+
+    ];
 
     public function location(): BelongsTo
     {
@@ -48,11 +55,4 @@ class JobHiring extends Model
     {
         return $this->hasMany(ApplicationInvitation::class);
     }
-
-    protected $casts = [
-        // 'is_active' => 'boolean',
-        'published_at' => 'datetime',
-        // 'closed_at' => 'datetime',
-
-    ];
 }

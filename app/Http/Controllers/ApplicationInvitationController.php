@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ApplicationInvitationRequest;
+use App\Jobs\SendApplicantInvitation;
 use App\Models\ApplicationInvitation;
 use App\Notifications\ApplicationInviteNotification;
 use Carbon\Carbon;
@@ -30,19 +31,15 @@ class ApplicationInvitationController extends Controller
         $data = $request->validated();
         $token =  Str::random(64);
 
+        // Create the application invitation
         $invitation = ApplicationInvitation::create([
             'job_hiring_id' => $data['job_hiring_id'],
             'email' => $data['email'],
             'token' => hash('sha256', $token),
             'expired_at' => Carbon::now()->addDays(7),
         ]);
-        Notification::route('mail', $invitation->email)
-            ->notify(
-                new ApplicationInviteNotification(
-                    $invitation,
-                    $token
-                )
-            );
+
+        SendApplicantInvitation::dispatch($invitation,$token);
 
         return response()->json([
             'message' => 'Invitation sent to applicant'

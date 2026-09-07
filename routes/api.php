@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationInvitationController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmploymentTypeController;
 use App\Http\Controllers\JobHiringController;
@@ -69,4 +70,14 @@ Route::middleware('jao.key')->group(function () {
         Route::patch('/{formVersion}', [FormVersion::class, 'update']);
         Route::delete('/{formVersion}', [FormVersion::class, 'destroy']);
     });
+
+    Route::prefix('/invitation')->group(function () {
+
+        Route::post('/',[ApplicationInvitationController::class,
+        'store']);
+
+
+
+    });
+
 });
