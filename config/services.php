@@ -42,7 +42,8 @@ return [
         'allowed_origins' => [
             env('ALLOWED_URL_FRONTEND_1'),
             env('ALLOWED_URL_ADMIN_2'),
-        ]
+        ],
+        'url' => env("ALLOWED_URL_FRONTEND_1")
     ],
 
 

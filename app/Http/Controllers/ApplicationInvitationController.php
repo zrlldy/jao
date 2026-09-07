@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ApplicationInvitationRequest;
 use App\Models\ApplicationInvitation;
+use App\Notifications\ApplicationInviteNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 use function Symfony\Component\Clock\now;
@@ -34,6 +36,14 @@ class ApplicationInvitationController extends Controller
             'token' => hash('sha256', $token),
             'expired_at' => Carbon::now()->addDays(7),
         ]);
+        Notification::route('mail', $invitation->email)
+            ->notify(
+                new ApplicationInviteNotification(
+                    $invitation,
+                    $token
+                )
+            );
+
         return response()->json([
             'message' => 'Invitation sent to applicant'
         ]);
