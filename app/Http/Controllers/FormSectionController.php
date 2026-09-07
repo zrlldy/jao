@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormSectionRequest;
+use App\Http\Requests\UpdateFormSectionRequest;
+use App\Http\Resources\FormsSectionResource;
 use App\Models\FormSection;
-use Illuminate\Http\Request;
 
 class FormSectionController extends Controller
 {
@@ -12,15 +14,18 @@ class FormSectionController extends Controller
      */
     public function index()
     {
-        //
+        $formsSections = FormSection::with('formVersion')->select()->paginate(5);
+        return FormsSectionResource::collection($formsSections);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(FormSectionRequest $request)
     {
-        //
+        $formSection = Formsection::create($request->validated());
+        return new FormsSectionResource($formSection);
+
     }
 
     /**
@@ -28,15 +33,16 @@ class FormSectionController extends Controller
      */
     public function show(FormSection $formSection)
     {
-        //
+        return new FormsSectionResource($formSection);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, FormSection $formSection)
+    public function update(UpdateFormSectionRequest $request, FormSection $formSection)
     {
-        //
+        $formSection->update($request->validated());
+        return new FormsSectionResource($formSection);
     }
 
     /**
@@ -44,6 +50,7 @@ class FormSectionController extends Controller
      */
     public function destroy(FormSection $formSection)
     {
-        //
+        $formSection->delete();
+        return response()->noContent();
     }
 }
