@@ -3,8 +3,12 @@
 use App\Http\Controllers\ApplicationInvitationController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmploymentTypeController;
+use App\Http\Controllers\FormSectionController;
+use App\Http\Controllers\FormTemplateController;
+use App\Http\Controllers\FormVersionController;
 use App\Http\Controllers\JobHiringController;
 use App\Http\Controllers\LocationController;
+use App\Models\FormSection;
 use App\Models\FormTemplate;
 use App\Models\FormVersion;
 use Illuminate\Http\Request;
@@ -15,12 +19,10 @@ use function Pest\Laravel\patch;
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
-
-
 Route::middleware('jao.key')->group(function () {
 
-
-    Route::prefix('/department')->group(function () {
+    // Department API
+    Route::prefix('departments')->group(function () {
         Route::get('/', [DepartmentController::class, 'index']);
         Route::post('/', [DepartmentController::class, 'store']);
         Route::get('/{department}', [DepartmentController::class, 'show']);
@@ -28,7 +30,9 @@ Route::middleware('jao.key')->group(function () {
         Route::delete('/{department}', [DepartmentController::class, 'destroy']);
     });
 
-    Route::prefix('/employmentType')->group(function () {
+
+    // Employment Type API
+    Route::prefix('employment-types')->group(function () {
         Route::get('/', [EmploymentTypeController::class, 'index']);
         Route::post('/', [EmploymentTypeController::class, 'store']);
         Route::get('/{employmentType}', [EmploymentTypeController::class, 'show']);
@@ -37,47 +41,75 @@ Route::middleware('jao.key')->group(function () {
     });
 
 
-    Route::prefix('/location')->group(function () {
+    // Location API
+    Route::prefix('locations')->group(function () {
         Route::get('/', [LocationController::class, 'index']);
         Route::post('/', [LocationController::class, 'store']);
         Route::get('/{location}', [LocationController::class, 'show']);
         Route::patch('/{location}', [LocationController::class, 'update']);
-        Route::delete('/{location}', [LocationController::class, 'delete']);
+        Route::delete('/{location}', [LocationController::class, 'destroy']);
     });
 
-    Route::prefix('/jobhiring')->group(function () {
+
+    // Job Hiring API
+    Route::prefix('job-hirings')->group(function () {
         Route::get('/', [JobHiringController::class, 'index']);
         Route::post('/', [JobHiringController::class, 'store']);
+
+        Route::patch(
+            '/{jobHiring}/form-versions',
+            [JobHiringController::class, 'attachFormVersion']
+        );
+
         Route::get('/{jobHiring}', [JobHiringController::class, 'show']);
         Route::patch('/{jobHiring}', [JobHiringController::class, 'update']);
         Route::delete('/{jobHiring}', [JobHiringController::class, 'destroy']);
     });
 
 
-
-    Route::prefix('/formTemplate')->group(function () {
-        Route::get('/', [FormTemplate::class, 'index']);
-        Route::post('/', [FormTemplate::class, 'store']);
-        Route::get('/{formTemplate}', [FormTemplate::class, 'show']);
-        Route::patch('/{formTemplate}', [FormTemplate::class, 'update']);
-        Route::delete('/{formTemplate}', [FormTemplate::class, 'destroy']);
+    // Form Template API
+    Route::prefix('form-templates')->group(function () {
+        Route::get('/', [FormTemplateController::class, 'index']);
+        Route::post('/', [FormTemplateController::class, 'store']);
+        Route::get('/{formTemplate}', [FormTemplateController::class, 'show']);
+        Route::patch('/{formTemplate}', [FormTemplateController::class, 'update']);
+        Route::delete('/{formTemplate}', [FormTemplateController::class, 'destroy']);
     });
 
-    Route::prefix('/formVersion')->group(function () {
-        Route::get('/', [FormVersion::class, 'index']);
-        Route::post('/', [FormVersion::class, 'store']);
-        Route::get('/{formVersion}', [FormVersion::class, 'show']);
-        Route::patch('/{formVersion}', [FormVersion::class, 'update']);
-        Route::delete('/{formVersion}', [FormVersion::class, 'destroy']);
+    // Nested API
+
+    Route::scopeBindings()->group(function () {
+
+        // Form Version API
+        Route::prefix('form-templates/{formTemplate}/form-versions')->group(function () {
+            Route::get('/', [FormVersionController::class, 'index']);
+            Route::post('/', [FormVersionController::class, 'store']);
+        });
+
+        Route::prefix('form-versions')->group(function () {
+            Route::get('/{formVersion}', [FormVersionController::class, 'show']);
+            Route::patch('/{formVersion}', [FormVersionController::class, 'update']);
+            Route::delete('/{formVersion}', [FormVersionController::class, 'destroy']);
+        });
+
+        Route::prefix('form-versions/{formVersion}/form-sections')->group(function () {
+            Route::get('/', [FormSectionController::class, 'index']);
+            Route::post('/', [FormSectionController::class, 'store']);
+        });
+
+        Route::prefix('form-sections')->group(function () {
+            Route::get('/{formSection}', [FormSectionController::class, 'show']);
+            Route::patch('/{formSection}', [FormSectionController::class, 'update']);
+            Route::delete('/{formSection}', [FormSectionController::class, 'destroy']);
+        });
     });
 
-    Route::prefix('/invitation')->group(function () {
 
-        Route::post('/',[ApplicationInvitationController::class,
-        'store']);
-
-
-
+    // Application Invitation API
+    Route::prefix('invitations')->group(function () {
+        Route::post('/', [
+            ApplicationInvitationController::class,
+            'store'
+        ]);
     });
-
 });

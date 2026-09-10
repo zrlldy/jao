@@ -39,7 +39,7 @@ class ApplicationInvitationController extends Controller
             'expired_at' => Carbon::now()->addDays(7),
         ]);
 
-        SendApplicantInvitation::dispatch($invitation,$token);
+        SendApplicantInvitation::dispatch($invitation, $token);
 
         return response()->json([
             'message' => 'Invitation sent to applicant'

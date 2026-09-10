@@ -29,10 +29,7 @@ class CreateFormVersionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'form_template_id' => ['uuid', 'unique', 'required'],
-            'version' => ['required', 'string', 'min:3', 'max:100'],
             'status' => ['required', 'string', 'min:3', 'max:100'],
-            'published_at' => ['date', 'required']
         ];
     }
 }

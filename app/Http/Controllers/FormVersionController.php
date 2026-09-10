@@ -2,57 +2,65 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Requests\CreateFormVersionRequest;
+use App\Http\Requests\UpdateFormVersionRequest;
 use App\Http\Resources\FormVersionResource;
+use App\Models\FormTemplate;
 use App\Models\FormVersion;
-use Illuminate\Http\Request;
 
 class FormVersionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(FormTemplate $formTemplate)
     {
-        $formVersion = FormVersion::with('formTemplate')->select('id', 'published_at', 'version', 'status')->paginate(10);
+        $formVersions = $formTemplate
+            ->formVersions()
+            ->select(
+                'id',
+                'form_template_id',
+                'published_at',
+                'version',
+                'status'
+            )
+            ->orderByDesc('version')
+            ->paginate(10);
 
-        return FormVersionResource::collection($formVersion);
+        return FormVersionResource::collection($formVersions);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(CreateFormVersionRequest $request)
-    {
-        $formVersion = FormVersion::create($request->validated());
+    public function store(
+        CreateFormVersionRequest $request,
+        FormTemplate $formTemplate
+    ) {
+        $nextVersion =
+            ($formTemplate->formVersions()->max('version') ?? 0) + 1;
+
+        $formVersion = $formTemplate->formVersions()->create([
+            ...$request->validated(),
+            'version' => $nextVersion,
+            'published_at' => today(),
+        ]);
 
         return new FormVersionResource($formVersion);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(FormVersion $formVersion)
     {
         return new FormVersionResource($formVersion);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, FormVersion $formVersion)
-    {
+    public function update(
+        UpdateFormVersionRequest $request,
+        FormVersion $formVersion
+    ) {
         $formVersion->update($request->validated());
+
         return new FormVersionResource($formVersion);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(FormVersion $formVersion)
     {
         $formVersion->delete();
+
         return response()->noContent();
     }
 }

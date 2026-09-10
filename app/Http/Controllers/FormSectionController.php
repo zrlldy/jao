@@ -6,51 +6,49 @@ use App\Http\Requests\FormSectionRequest;
 use App\Http\Requests\UpdateFormSectionRequest;
 use App\Http\Resources\FormsSectionResource;
 use App\Models\FormSection;
+use App\Models\FormVersion;
 
 class FormSectionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(FormVersion $formVersion)
     {
-        $formsSections = FormSection::with('formVersion')->select()->paginate(5);
-        return FormsSectionResource::collection($formsSections);
+        $formSections = $formVersion
+            ->formSections()
+            ->orderBy('sort_order')
+            ->paginate(5);
+
+        return FormsSectionResource::collection($formSections);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(FormSectionRequest $request)
-    {
-        $formSection = Formsection::create($request->validated());
+    public function store(
+        FormSectionRequest $request,
+        FormVersion $formVersion
+    ) {
+        $formSection = $formVersion
+            ->formSections()
+            ->create($request->validated());
+
         return new FormsSectionResource($formSection);
-
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(FormSection $formSection)
     {
         return new FormsSectionResource($formSection);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateFormSectionRequest $request, FormSection $formSection)
-    {
+    public function update(
+        UpdateFormSectionRequest $request,
+        FormSection $formSection
+    ) {
         $formSection->update($request->validated());
+
         return new FormsSectionResource($formSection);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(FormSection $formSection)
     {
         $formSection->delete();
+
         return response()->noContent();
     }
 }

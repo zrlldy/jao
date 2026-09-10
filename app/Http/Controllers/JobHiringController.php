@@ -58,4 +58,25 @@ class JobHiringController extends Controller
         $jobHiring->delete();
         return response()->noContent();
     }
+
+    public function attachFormVersion(
+        Request $request,
+        JobHiring $jobHiring
+    ) {
+        $data = $request->validate([
+            'form_version_id' => [
+                'required',
+                'uuid',
+                'exists:form_versions,id',
+            ],
+        ]);
+
+        $jobHiring->formVersions()->attach(
+            $data['form_version_id']
+        );
+
+        return response()->json([
+            'message' => 'Form version attached successfully.',
+        ]);
+    }
 }

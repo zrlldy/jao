@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignUuidFor(FormTemplate::class)
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->string('version');
+            $table->unsi('version');
             $table->string('status');
             $table->date('published_at');
             $table->timestamps();
