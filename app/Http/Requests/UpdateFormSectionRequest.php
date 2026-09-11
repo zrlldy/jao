@@ -32,12 +32,8 @@ class UpdateFormSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'form_template_id' => ['sometimes', 'exists:form_templates,id'],
-            'name' => ['sometimes', 'string', 'max:255'],
-            'version' => ['sometimes', 'string', 'max:255'],
-            'status' => ['sometimes', 'string', 'max:255'],
+            'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'is_active' => ['sometimes', 'boolean'],
         ];
     }
 }

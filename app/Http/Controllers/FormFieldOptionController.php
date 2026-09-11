@@ -7,12 +7,13 @@ use App\Http\Requests\UpdateFormFieldOptionRequest;
 use App\Http\Resources\FormFieldOptionResource;
 use App\Models\FormField;
 use App\Models\FormFieldOption;
+use Illuminate\Http\Request;
 
 class FormFieldOptionController extends Controller
 {
     public function index(FormField $formField)
     {
-        $formFieldOptions = $formField->formFieldOptions->select(
+        $formFieldOptions = $formField->formFieldOptions()->select(
             'id',
             'form_field_id',
             'label',
@@ -36,6 +37,40 @@ class FormFieldOptionController extends Controller
         return new FormFieldOptionResource($formFieldOption);
     }
 
+    public function formFieldOptionsReorder(Request $request, FormFieldOption $formFieldOption)
+    {
+        $request->validate([
+            'sort_order' => 'required|integer'
+        ]);
+
+        $oldSortOrder = $formFieldOption->sort_order;
+        $newSortOrder = $request->input('sort_order');
+        $formfield = $formFieldOption->form_field_id;
+
+
+        if ($oldSortOrder !== $newSortOrder) {
+            if ($oldSortOrder > $newSortOrder) {
+
+
+                FormFieldOption::where('form_field_id', $formfield)
+                    ->where('sort_order', '<', $oldSortOrder)
+                    ->where('sort_order', '>=', $newSortOrder)
+                    ->increment('sort_order');
+
+            } else {
+                FormFieldOption::where('form_field_id', $formfield)
+                    ->where('sort_order', '>', $oldSortOrder)
+                    ->where('sort_order', '<=', $newSortOrder)
+                    ->decrement('sort_order');
+            }
+        }
+        $formFieldOption->update(['sort_order' => $newSortOrder]);
+
+        return response()->json([
+            'message' => 'Form Field option moved successfully'
+        ]);
+
+    }
 
     public function update(UpdateFormFieldOptionRequest $request, FormFieldOption $formFieldOption)
     {
@@ -43,11 +78,6 @@ class FormFieldOptionController extends Controller
         return response()->json([
             'message' => 'Form Field Option updated successfully'
         ]);
-    }
-
-    public function formFieldOptionsReorder()
-    {
-
     }
 
     public function destroy(FormFieldOption $formFieldOption)

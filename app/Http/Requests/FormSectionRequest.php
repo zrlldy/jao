@@ -23,12 +23,9 @@ class FormSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'form_template_id' => ['required', 'exists:form_templates,id'],
-            'name' => ['required', 'string', 'max:255'],
-            'version' => ['required', 'string', 'max:255'],
-            'status' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'is_active' => ['required', 'boolean'],
+
         ];
     }
 }
