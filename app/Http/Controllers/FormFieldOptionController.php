@@ -2,48 +2,57 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateFormFieldOptionRequest;
+use App\Http\Requests\UpdateFormFieldOptionRequest;
+use App\Http\Resources\FormFieldOptionResource;
+use App\Models\FormField;
 use App\Models\FormFieldOption;
-use Illuminate\Http\Request;
 
 class FormFieldOptionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(FormField $formField)
     {
-        //
+        $formFieldOptions = $formField->formFieldOptions->select(
+            'id',
+            'form_field_id',
+            'label',
+            'value',
+            'sort_order'
+        )->orderBy('sort_order')->get();
+        return FormFieldOptionResource::collection($formFieldOptions);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CreateFormFieldOptionRequest $request, FormField $formField)
     {
-        //
+        $formField->formFieldOptions()->create([...$request->validated(),
+            'sort_order' => ($formField->formFieldOptions()->max('sort_order') ?? 0) + 1
+        ]);
+        return new FormFieldOptionResource($formField->formFieldOptions);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(FormFieldOption $formFieldOption)
     {
-        //
+        $formFieldOption = $formFieldOption->load('formField:id,name,type');
+        return new FormFieldOptionResource($formFieldOption);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, FormFieldOption $formFieldOption)
+
+    public function update(UpdateFormFieldOptionRequest $request, FormFieldOption $formFieldOption)
     {
-        //
+        $formFieldOption->update($request->validated());
+        return response()->json([
+            'message' => 'Form Field Option updated successfully'
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function formFieldOptionsReorder()
+    {
+
+    }
+
     public function destroy(FormFieldOption $formFieldOption)
     {
-        //
+        $formFieldOption->delete();
+        return response()->noContent();
     }
 }

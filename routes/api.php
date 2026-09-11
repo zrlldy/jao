@@ -4,18 +4,13 @@ use App\Http\Controllers\ApplicationInvitationController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmploymentTypeController;
 use App\Http\Controllers\FormFieldController;
+use App\Http\Controllers\FormFieldOptionController;
 use App\Http\Controllers\FormSectionController;
 use App\Http\Controllers\FormTemplateController;
 use App\Http\Controllers\FormVersionController;
 use App\Http\Controllers\JobHiringController;
 use App\Http\Controllers\LocationController;
-use App\Models\FormSection;
-use App\Models\FormTemplate;
-use App\Models\FormVersion;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-use function Pest\Laravel\patch;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -105,28 +100,35 @@ Route::middleware('jao.key')->group(function () {
             Route::patch('/{formSection}', [FormSectionController::class, 'update']);
             Route::delete('/{formSection}', [FormSectionController::class, 'destroy']);
         });
+        // Form Field
+
+        Route::prefix('/form-section/{formSection}/form-fields')->group(function () {
+            Route::get('/', [FormFieldController::class, 'index']);
+            Route::post('/', [FormFieldController::class, 'store']);
+        });
+
+
+        Route::prefix('/form-fields')->group(function () {
+            Route::get('/{formField}', [FormFieldController::class, 'show']);
+            Route::patch('/{formField}', [FormFieldController::class, 'update']);
+            Route::patch('{formField}}/re-order', [FormFieldController::class, 'formFieldReorder']);
+            Route::delete('/{formField}', [FormFieldController::class, 'destroy']);
+        });
+
+//    Form Field Options
+        Route::prefix('/form-fields/{formField}/options')->group(function () {
+            Route::get('/', [FormFieldOptionController::class, 'index']);
+            Route::post('/', [FormFieldOptionController::class, 'store']);
+        });
+        Route::prefix('/form-field-options')->group(function () {
+            Route::get('/{formFieldOption}', [FormFieldOptionController::class, 'show']);
+            Route::patch('/{formFieldOption}', [FormFieldOptionController::class, 'update']);
+            Route::patch('/{formFieldOption}/re-order', [FormFieldOptionController::class, 'formFieldOptionsReorder']);
+            Route::delete('/{formFieldOption}', [FormFieldOptionController::class, 'destroy']);
+        });
+
+
     });
-
-    // Form Field
-
-    Route::prefix('/form-section/{formSection}/form-fields')->group(function () {
-
-        Route::get('/', [FormFieldController::class, 'index']);
-        Route::post('/', [FormFieldController::class, 'store']);
-    });
-
-
-    Route::prefix('/form-fields')->group(function () {
-        Route::get('/{formField}', [FormFieldController::class, 'show']);
-        Route::patch('/{formField}', [FormFieldController::class, 'update']);
-
-        Route::patch('{formField}}/re-order', [FormFieldController::class, 'formFieldReorder']);
-        Route::delete('/{formField}', [FormFieldController::class, 'destroy']);
-    });
-
-
-
-
 
     // Application Invitation API
     Route::prefix('invitations')->group(function () {

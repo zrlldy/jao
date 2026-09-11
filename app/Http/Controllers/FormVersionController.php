@@ -29,8 +29,9 @@ class FormVersionController extends Controller
 
     public function store(
         CreateFormVersionRequest $request,
-        FormTemplate $formTemplate
-    ) {
+        FormTemplate             $formTemplate
+    )
+    {
         $nextVersion =
             ($formTemplate->formVersions()->max('version') ?? 0) + 1;
 
@@ -50,17 +51,16 @@ class FormVersionController extends Controller
 
     public function update(
         UpdateFormVersionRequest $request,
-        FormVersion $formVersion
-    ) {
+        FormVersion              $formVersion
+    )
+    {
         $formVersion->update($request->validated());
-
         return new FormVersionResource($formVersion);
     }
 
     public function destroy(FormVersion $formVersion)
     {
         $formVersion->delete();
-
         return response()->noContent();
     }
 }
