@@ -5,6 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
+use function Pest\Laravel\json;
+
 class CreateFormFieldRequest extends FormRequest
 {
     /**
@@ -12,7 +14,7 @@ class CreateFormFieldRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -23,7 +25,17 @@ class CreateFormFieldRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'key' => ['required', 'string', 'max:255'],
+            'label' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'string', 'max:50'],
+
+            'placeholder' => ['nullable', 'string'],
+            'default_value' => ['nullable'],
+
+            'is_required' => ['sometimes', 'boolean'],
+
+            'settings' => ['nullable', 'array'],
+            'validation_rules' => ['nullable', 'array'],
         ];
     }
 }

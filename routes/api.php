@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApplicationInvitationController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmploymentTypeController;
+use App\Http\Controllers\FormFieldController;
 use App\Http\Controllers\FormSectionController;
 use App\Http\Controllers\FormTemplateController;
 use App\Http\Controllers\FormVersionController;
@@ -92,6 +93,8 @@ Route::middleware('jao.key')->group(function () {
             Route::delete('/{formVersion}', [FormVersionController::class, 'destroy']);
         });
 
+        // Form Section API
+
         Route::prefix('form-versions/{formVersion}/form-sections')->group(function () {
             Route::get('/', [FormSectionController::class, 'index']);
             Route::post('/', [FormSectionController::class, 'store']);
@@ -103,6 +106,26 @@ Route::middleware('jao.key')->group(function () {
             Route::delete('/{formSection}', [FormSectionController::class, 'destroy']);
         });
     });
+
+    // Form Field
+
+    Route::prefix('/form-section/{formSection}/form-fields')->group(function () {
+
+        Route::get('/', [FormFieldController::class, 'index']);
+        Route::post('/', [FormFieldController::class, 'store']);
+    });
+
+
+    Route::prefix('/form-fields')->group(function () {
+        Route::get('/{formField}', [FormFieldController::class, 'show']);
+        Route::patch('/{formField}', [FormFieldController::class, 'update']);
+
+        Route::patch('{formField}}/re-order', [FormFieldController::class, 'formFieldReorder']);
+        Route::delete('/{formField}', [FormFieldController::class, 'destroy']);
+    });
+
+
+
 
 
     // Application Invitation API

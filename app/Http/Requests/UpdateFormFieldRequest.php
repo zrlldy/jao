@@ -12,7 +12,7 @@ class UpdateFormFieldRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,14 @@ class UpdateFormFieldRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'key' => ['sometimes', 'string', 'max:255'],
+            'label' => ['sometimes', 'string', 'max:255'],
+            'type' => ['sometimes', 'string', 'max:50'],
+            'placeholder' => ['nullable', 'string'],
+            'default_value' => ['nullable'],
+            'is_required' => ['sometimes', 'boolean'],
+            'settings' => ['sometimes', 'array'],
+            'validation_rules' => ['sometimes', 'array'],
         ];
     }
 }
