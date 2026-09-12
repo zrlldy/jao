@@ -47,7 +47,7 @@ class FormSectionController extends Controller
         $oldSortOrder = $formSection->sort_order;
         $newSortOrder = request('sort_order');
         $formVersionId = $formSection->form_version_id;
-
+        
         if ($oldSortOrder !== $newSortOrder) {
             if ($oldSortOrder > $newSortOrder) {
                 FormSection::where('form_version_id', $formVersionId)

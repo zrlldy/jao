@@ -5,8 +5,6 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-use function Pest\Laravel\json;
-
 class CreateFormFieldRequest extends FormRequest
 {
     /**
@@ -14,7 +12,7 @@ class CreateFormFieldRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
