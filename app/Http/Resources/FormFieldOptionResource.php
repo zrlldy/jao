@@ -19,7 +19,8 @@ class FormFieldOptionResource extends JsonResource
             'form_field' => $this->whenLoaded('formField', function () {
                 return [
                     'id' => $this->formField->id,
-                    'name' => $this->formField->name,
+                    'key' => $this->formField->key,
+                    'label' => $this->formField->label,
                     'type' => $this->formField->type,
                 ];
             }),

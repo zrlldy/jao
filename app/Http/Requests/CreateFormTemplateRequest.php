@@ -34,8 +34,8 @@ class CreateFormTemplateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => ['required', 'min:3', 'max:20', 'unique'],
-            "description" => ['required', 'min:3', 'max:100', 'unique'],
+            "name" => ['required', 'min:3', 'max:20',],
+            "description" => ['required', 'min:3', 'max:100',],
             "is_active" => ['required', 'boolean'],
         ];
     }

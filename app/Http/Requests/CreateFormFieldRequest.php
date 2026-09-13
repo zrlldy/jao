@@ -29,8 +29,8 @@ class CreateFormFieldRequest extends FormRequest
             'placeholder' => ['nullable', 'string'],
             'default_value' => ['nullable'],
             'is_required' => ['sometimes', 'boolean'],
-            'settings' => ['nullable', 'array'],
-            'validation_rules' => ['nullable', 'array'],
+            'settings' => ['nullable', 'json'],
+            'validation_rules' => ['nullable', 'json'],
         ];
     }
 }

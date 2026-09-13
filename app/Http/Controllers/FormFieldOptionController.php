@@ -25,15 +25,17 @@ class FormFieldOptionController extends Controller
 
     public function store(CreateFormFieldOptionRequest $request, FormField $formField)
     {
-        $formField->formFieldOptions()->create([...$request->validated(),
+        $formFieldOption = $formField->formFieldOptions()->create([...$request->validated(),
             'sort_order' => ($formField->formFieldOptions()->max('sort_order') ?? 0) + 1
         ]);
-        return new FormFieldOptionResource($formField->formFieldOptions);
+
+        $formFieldOption->load('formField');
+        return new FormFieldOptionResource($formFieldOption);
     }
 
     public function show(FormFieldOption $formFieldOption)
     {
-        $formFieldOption = $formFieldOption->load('formField:id,name,type');
+        $formFieldOption = $formFieldOption->load('formField');
         return new FormFieldOptionResource($formFieldOption);
     }
 

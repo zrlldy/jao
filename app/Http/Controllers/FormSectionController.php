@@ -42,12 +42,11 @@ class FormSectionController extends Controller
         request()->validate([
             'sort_order' => 'required|integer'
         ]);
-
-        $formSection = FormSection::find(request('form_section_id'));
+        
         $oldSortOrder = $formSection->sort_order;
         $newSortOrder = request('sort_order');
         $formVersionId = $formSection->form_version_id;
-        
+
         if ($oldSortOrder !== $newSortOrder) {
             if ($oldSortOrder > $newSortOrder) {
                 FormSection::where('form_version_id', $formVersionId)

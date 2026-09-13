@@ -27,13 +27,13 @@ class FormFieldController extends Controller
     public function store(CreateFormFieldRequest $request, FormSection $formSection)
     {
 
-        $formsection = $formSection->formFields()->create([
+        $formField = $formSection->formFields()->create([
             ...$request->validated(),
             'sort_order' => ($formSection->formFields->max('sort_order') ?? 0) + 1,
 
         ]);
-
-        return new FormFieldResource($formSection);
+        $formField->load('formSection');
+        return new FormFieldResource($formField);
     }
 
 
@@ -42,19 +42,7 @@ class FormFieldController extends Controller
      */
     public function show(FormField $formField)
     {
-
-
-        $formField = $formField->load('formSection')->select(
-            'id',
-            'form_section_id',
-            'key',
-            'label',
-            'type',
-            'placeholder',
-            'settings',
-            'validation_rules',
-        );
-
+        $formField = $formField->load('formSection');
         return new FormFieldResource($formField);
     }
 

@@ -29,8 +29,8 @@ class UpdateFormFieldRequest extends FormRequest
             'placeholder' => ['nullable', 'string'],
             'default_value' => ['nullable'],
             'is_required' => ['sometimes', 'boolean'],
-            'settings' => ['sometimes', 'array'],
-            'validation_rules' => ['sometimes', 'array'],
+            'settings' => ['sometimes', 'json'],
+            'validation_rules' => ['sometimes', 'json'],
         ];
     }
 }

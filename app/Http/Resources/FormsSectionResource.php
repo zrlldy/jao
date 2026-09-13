@@ -20,14 +20,14 @@ class FormsSectionResource extends JsonResource
             'form_version' => $this->whenLoaded('formVersion', function () {
                 return [
                     'id' => $this->formVersion->id,
-                    'name' => $this->formVersion->name,
+                    'version' => $this->formVersion->version,
+                    'status' => $this->formVersion->status,
+                    'published_at' => $this->formVersion->published_at,
                 ];
             }),
-            'name' => $this->name,
-            'version' => $this->version,
-            'status' => $this->status,
+            'title' => $this->title,
             'description' => $this->description,
-            'is_active' => $this->is_active
+            'sort_order' => $this->sort_order,
         ];
     }
 }

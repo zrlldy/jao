@@ -12,6 +12,11 @@ class FormField extends Model
     use HasUuids;
 
     protected $guarded = [];
+    protected $casts = [
+        'is_required' => 'boolean',
+        'validation_rules' => 'json',
+        'settings' => 'json'
+    ];
 
     public function formFieldOptions(): HasMany
     {
@@ -22,8 +27,4 @@ class FormField extends Model
     {
         return $this->belongsTo(FormSection::class);
     }
-
-    protected $casts = [
-        'is_required' => 'boolean',
-    ];
 }
