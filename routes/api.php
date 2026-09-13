@@ -84,22 +84,22 @@ Route::middleware('jao.key')->group(function () {
             Route::delete('/{formSection}', [FormSectionController::class, 'destroy']);
         });
         // Form Field
-        Route::prefix('/form-section/{formSection}/form-fields')->group(function () {
+        Route::prefix('form-sections/{formSection}/form-fields')->group(function () {
             Route::get('/', [FormFieldController::class, 'index']);
             Route::post('/', [FormFieldController::class, 'store']);
         });
-        Route::prefix('/form-fields')->group(function () {
+        Route::prefix('form-fields')->group(function () {
             Route::get('/{formField}', [FormFieldController::class, 'show']);
             Route::patch('/{formField}', [FormFieldController::class, 'update']);
             Route::patch('/{formField}/re-order', [FormFieldController::class, 'formFieldReorder']);
             Route::delete('/{formField}', [FormFieldController::class, 'destroy']);
         });
 //    Form Field Options
-        Route::prefix('/form-fields/{formField}/options')->group(function () {
+        Route::prefix('form-fields/{formField}/options')->group(function () {
             Route::get('/', [FormFieldOptionController::class, 'index']);
             Route::post('/', [FormFieldOptionController::class, 'store']);
         });
-        Route::prefix('/form-field-options')->group(function () {
+        Route::prefix('form-field-options')->group(function () {
             Route::get('/{formFieldOption}', [FormFieldOptionController::class, 'show']);
             Route::patch('/{formFieldOption}', [FormFieldOptionController::class, 'update']);
             Route::patch('/{formFieldOption}/re-order', [FormFieldOptionController::class, 'formFieldOptionsReorder']);

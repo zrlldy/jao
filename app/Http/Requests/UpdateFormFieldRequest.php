@@ -26,11 +26,11 @@ class UpdateFormFieldRequest extends FormRequest
             'key' => ['sometimes', 'string', 'max:255'],
             'label' => ['sometimes', 'string', 'max:255'],
             'type' => ['sometimes', 'string', 'max:50'],
-            'placeholder' => ['nullable', 'string'],
-            'default_value' => ['nullable'],
+            'placeholder' => ['nullable', 'string', 'sometimes'],
+            'default_value' => ['nullable', 'sometimes'],
             'is_required' => ['sometimes', 'boolean'],
-            'settings' => ['sometimes', 'json'],
-            'validation_rules' => ['sometimes', 'json'],
+            'settings' => ['sometimes', 'array'],
+            'validation_rules' => ['sometimes', 'array'],
         ];
     }
 }

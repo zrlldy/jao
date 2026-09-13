@@ -22,7 +22,9 @@ class FormFieldResource extends JsonResource
             'placeholder' => $this->placeholder,
             'settings' => $this->settings,
             'validation_rules' => $this->validation_rules,
-
+            'default_value' => $this->default_value,
+            'is_required' => $this->is_required,
+            'sort_order' => $this->sort_order,
             'form_section' => $this->whenLoaded('formSection', function () {
                 return [
                     'id' => $this->formSection->id,

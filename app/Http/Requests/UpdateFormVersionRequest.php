@@ -29,8 +29,6 @@ class UpdateFormVersionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'form_template_id' => ['uuid', 'unique', 'sometimes'],
-            'version' => ['sometimes', 'string', 'min:3', 'max:100'],
             'status' => ['sometimes', 'string', 'min:3', 'max:100'],
             'published_at' => ['date', 'sometimes']
         ];

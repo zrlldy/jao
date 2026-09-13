@@ -24,7 +24,7 @@ class FormSectionRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            'description' => ['required', 'string'],
         ];
     }
 }

@@ -14,8 +14,8 @@ class FormField extends Model
     protected $guarded = [];
     protected $casts = [
         'is_required' => 'boolean',
-        'validation_rules' => 'json',
-        'settings' => 'json'
+        'validation_rules' => 'array',
+        'settings' => 'array'
     ];
 
     public function formFieldOptions(): HasMany

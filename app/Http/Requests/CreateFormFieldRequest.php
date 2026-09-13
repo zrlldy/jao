@@ -26,11 +26,11 @@ class CreateFormFieldRequest extends FormRequest
             'key' => ['required', 'string', 'max:255'],
             'label' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', 'max:50'],
-            'placeholder' => ['nullable', 'string'],
-            'default_value' => ['nullable'],
+            'placeholder' => ['nullable', 'string', 'max:255', 'min:5'],
+            'default_value' => ['nullable', 'min:0', 'max:255'],
             'is_required' => ['sometimes', 'boolean'],
-            'settings' => ['nullable', 'json'],
-            'validation_rules' => ['nullable', 'json'],
+            'settings' => ['nullable', 'array'],
+            'validation_rules' => ['nullable', 'array'],
         ];
     }
 }

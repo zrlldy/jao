@@ -5,8 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,7 +16,7 @@ return new class extends Migration
             $table->foreignIdFor(FormField::class)->constrained()->cascadeOnDelete();
             $table->string('value');
             $table->string('label');
-            $table->string('sort_order');
+            $table->unsignedInteger('sort_order');
             $table->timestamps();
         });
     }
