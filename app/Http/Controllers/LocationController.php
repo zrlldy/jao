@@ -45,8 +45,8 @@ class LocationController extends Controller
      */
     public function update(UpdateLocationRequest $request, Location $location)
     {
-        $locationUpdated = $location->update($request->validated());
-        return new LocationResource($locationUpdated);
+        $location->update($request->validated());
+        return new LocationResource($location);
     }
 
     /**

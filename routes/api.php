@@ -44,10 +44,10 @@ Route::middleware('jao.key')->group(function () {
     Route::prefix('job-hirings')->group(function () {
         Route::get('/', [JobHiringController::class, 'index']);
         Route::post('/', [JobHiringController::class, 'store']);
-        Route::patch(
-            '/{jobHiring}/form-versions',
-            [JobHiringController::class, 'attachFormVersion']
-        );
+        // Route::patch(
+        //     '/{jobHiring}/form-versions',
+        //     [JobHiringController::class, 'attachFormVersion']
+        // );
         Route::get('/{jobHiring}', [JobHiringController::class, 'show']);
         Route::patch('/{jobHiring}', [JobHiringController::class, 'update']);
         Route::delete('/{jobHiring}', [JobHiringController::class, 'destroy']);
@@ -94,7 +94,7 @@ Route::middleware('jao.key')->group(function () {
             Route::patch('/{formField}/re-order', [FormFieldController::class, 'formFieldReorder']);
             Route::delete('/{formField}', [FormFieldController::class, 'destroy']);
         });
-//    Form Field Options
+        //    Form Field Options
         Route::prefix('form-fields/{formField}/options')->group(function () {
             Route::get('/', [FormFieldOptionController::class, 'index']);
             Route::post('/', [FormFieldOptionController::class, 'store']);

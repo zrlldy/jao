@@ -37,7 +37,7 @@ class UpdateLocationRequest extends FormRequest
             'address' => 'sometimes|string|min:3|max:20',
             'province' => 'sometimes|string|min:3|max:20',
             'hub' => 'sometimes|string|min:3|max:20',
-            'is_active' => 'sometimes|required'
+            'is_active' => 'sometimes|required|boolean'
         ];
     }
 }

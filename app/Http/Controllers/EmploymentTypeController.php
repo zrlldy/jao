@@ -44,9 +44,9 @@ class EmploymentTypeController extends Controller
     public function update(UpdateEmploymentTypeRequest $request, EmploymentType $employmentType)
     {
 
-        $employmentTypeUpdated = $employmentType->update($request->validated());
+        $employmentType->update($request->validated());
 
-        return new EmploymentTypeResource($employmentTypeUpdated);
+        return new EmploymentTypeResource($employmentType);
     }
 
     /**

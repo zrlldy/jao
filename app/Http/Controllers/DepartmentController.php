@@ -6,9 +6,7 @@ use App\Http\Requests\CreateDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
 use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
-use PHPUnit\Logging\OpenTestReporting\Status;
+
 
 class DepartmentController extends Controller
 {
@@ -31,12 +29,7 @@ class DepartmentController extends Controller
      */
     public function store(CreateDepartmentRequest $request)
     {
-        $data = $request->validated();
-        $department = Department::create([
-            'name' => $data['name'],
-            'code' => $data['code'],
-            'is_active' => $data['is_active']
-        ]);
+        $department = Department::create($request->validated());
         return (new DepartmentResource($department))->additional(['message' => "{$department->name} successfully created"]);
     }
 

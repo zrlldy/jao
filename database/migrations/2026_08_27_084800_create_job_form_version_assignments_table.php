@@ -18,6 +18,9 @@ return new class extends Migration
             $table->foreignUuidFor(JobHiring::class)->constrained()->cascadeOnDelete();
             $table->foreignUuidFor(FormVersion::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
+
+
+            // $table->unique('job_hiring_id,form_version_id');
         });
     }
 
