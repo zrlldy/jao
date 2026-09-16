@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ApplicationAnswerController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationInvitationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
@@ -120,11 +122,23 @@ Route::middleware('jao.key')->group(function () {
             Route::delete('/{formFieldOption}', [FormFieldOptionController::class, 'destroy']);
         });
     });
+
     // Application Invitation API
     Route::prefix('invitations')->group(function () {
         Route::post('/', [
             ApplicationInvitationController::class,
             'store'
         ]);
+    });
+
+    Route::prefix('/applicant')->group(function () {
+        Route::get('/', [ApplicationController::class, 'index']);
+        Route::post('/', [ApplicationController::class, 'store']);
+    });
+
+    Route::prefix('/applicant/{Applicant}/application-answer')->group(function () {
+        Route::get('/', [ApplicationAnswerController::class, 'index']);
+        Route::post('/', [ApplicationAnswerController::class, 'store']);
+        Route::get('/{applicationAnswer}', [ApplicationAnswerController::class, 'show']);
     });
 });

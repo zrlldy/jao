@@ -30,20 +30,4 @@ class ApplicationAnswerController extends Controller
     {
         //
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, ApplicationAnswer $applicationAnswer)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ApplicationAnswer $applicationAnswer)
-    {
-        //
-    }
 }
