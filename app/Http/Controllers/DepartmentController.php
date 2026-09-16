@@ -15,13 +15,18 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $department = Department::select('name', 'code', 'is_active', 'id')->paginate(10);
+        $departments = Department::select(
+            'id',
+            'name',
+            'code',
+            'is_active'
+        )->paginate(10);
 
-        if ($department->isEmpty()) {
 
-            return response()->json(['No Department data found'], 200);
-        }
-        return  DepartmentResource::collection($department)->additional(['message' => 'Departments successfully retrieved']);
+        return DepartmentResource::collection($departments)
+            ->additional([
+                'message' => 'Departments successfully retrieved',
+            ]);
     }
 
     /**
@@ -45,11 +50,16 @@ class DepartmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDepartmentRequest $request, Department $department)
-    {
-        $oldname = $department->name;
+    public function update(
+        UpdateDepartmentRequest $request,
+        Department $department
+    ) {
         $department->update($request->validated());
-        return (new DepartmentResource($department))->additional(['message' => "{$oldname} has been updated "]);
+
+        return (new DepartmentResource($department))
+            ->additional([
+                'message' => "{$department->name} successfully updated",
+            ]);
     }
 
     /**

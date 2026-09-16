@@ -18,7 +18,7 @@ return new class extends Migration {
                 ->cascadeOnDelete();
             $table->unsignedInteger('version');
             $table->string('status');
-            $table->date('published_at');
+            $table->date('published_at')->nullable();
             $table->timestamps();
         });
     }

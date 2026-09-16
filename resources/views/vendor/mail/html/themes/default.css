@@ -1,0 +1,133 @@
+/* resources/views/vendor/mail/html/themes/default.css */
+
+/* Base */
+body,
+body *:not(html):not(style):not(br):not(tr):not(code) {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: #f5f5fb;
+    color: #1f2937;
+    height: 100%;
+    line-height: 1.5;
+    margin: 0;
+    width: 100% !important;
+}
+
+/* Logo above the card */
+.header {
+    padding: 30px 0;
+    text-align: center;
+}
+
+.header img {
+    height: 48px;
+}
+
+/* Outer wrapper */
+.wrapper {
+    background-color: #f5f5fb;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Card body */
+.inner-body {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    margin: 0 auto;
+    overflow: hidden;
+    width: 570px;
+}
+
+/* Red title banner across the top of the card */
+.banner {
+    background-color: #dc2626;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+    padding: 28px 0;
+    text-align: center;
+}
+
+.content-cell {
+    padding: 32px 40px 40px 40px;
+}
+
+/* Typography */
+h1 {
+    color: #1f2937;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 0;
+}
+
+p,
+ul,
+ol {
+    font-size: 15px;
+    line-height: 1.6em;
+    margin-top: 0;
+    color: #374151;
+}
+
+/* Button */
+.action {
+    margin: 30px auto;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.button {
+    background-color: #dc2626;
+    border-radius: 6px;
+    color: #ffffff !important;
+    display: inline-block;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 14px 32px;
+}
+
+.button:hover {
+    background-color: #b91c1c;
+}
+
+/* Footer */
+.footer {
+    margin: 0 auto;
+    padding: 30px 0;
+    text-align: center;
+    width: 570px;
+}
+
+.footer p {
+    color: #9ca3af;
+    font-size: 12px;
+    line-height: 1.5em;
+}
+
+.footer .socials img {
+    height: 24px;
+    margin: 0 6px;
+}
+
+.footer .powered-by {
+    color: #b5b9c4;
+    font-size: 11px;
+    margin-top: 8px;
+}
+
+.subcopy {
+    border-top: 1px solid #edeef1;
+    margin-top: 25px;
+    padding-top: 25px;
+}
+
+.subcopy p {
+    font-size: 13px;
+}

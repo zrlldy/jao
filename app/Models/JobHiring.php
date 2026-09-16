@@ -38,7 +38,7 @@ class JobHiring extends Model
 
     public function formVersions(): BelongsToMany
     {
-        return $this->belongsToMany(FormVersion::class, 'job_form_version_assignments');
+        return $this->belongsToMany(FormVersion::class, 'job_form_version_assignments')->withTimestamps();
     }
 
     public function onboardingTemplates(): BelongsToMany

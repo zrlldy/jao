@@ -17,17 +17,19 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-//        User::factory()->create([
-//            'name' => 'Test User',
-//            'email' => 'test@example.com',
-//        ]);
+        //        User::factory()->create([
+        //            'name' => 'Test User',
+        //            'email' => 'test@example.com',
+        //        ]);
 
         $this->call([
             EmploymentTypeSeed::class,
             DepartmentSeed::class,
             LocationSeed::class,
-            JobHiringSeed::class
+            JobHiringSeed::class,
+            FormTemplateSeed::class,
+            FormVersionSeed::class,
+            JobHiringFormVersionSeed::class
         ]);
-
     }
 }

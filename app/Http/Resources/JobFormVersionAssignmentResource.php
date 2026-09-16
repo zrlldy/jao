@@ -14,6 +14,9 @@ class JobFormVersionAssignmentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'job_hiring' => new JobHiringResource($this->whenLoaded('jobHiring')),
+            'form_version' => new FormVersionResource($this->whenLoaded('formVersion')),
+        ];
     }
 }

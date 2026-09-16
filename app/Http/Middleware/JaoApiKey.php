@@ -11,7 +11,7 @@ class JaoApiKey
     /**
      * Handle an incoming request.
      *
-     * @param  Closure(Request): (Response)  $next
+     * @param Closure(Request): (Response) $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -27,6 +27,7 @@ class JaoApiKey
             !is_string($expectedKey) ||
             !hash_equals($expectedKey, $apiKey)
         ) {
+//            return redirect('https://www.eastequatorexpress.com/');
             return response()->json([
                 'message' => 'Unauthorized.',
             ], 401);

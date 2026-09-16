@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('job_form_version_assignments', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            // $table->uuid('id')->primary();
             $table->foreignUuidFor(JobHiring::class)->constrained()->cascadeOnDelete();
             $table->foreignUuidFor(FormVersion::class)->constrained()->cascadeOnDelete();
             $table->timestamps();

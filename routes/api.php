@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApplicationInvitationController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmploymentTypeController;
 use App\Http\Controllers\FormFieldController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\FormFieldOptionController;
 use App\Http\Controllers\FormSectionController;
 use App\Http\Controllers\FormTemplateController;
 use App\Http\Controllers\FormVersionController;
+use App\Http\Controllers\JobFormVersionAssignmentController;
 use App\Http\Controllers\JobHiringController;
 use App\Http\Controllers\LocationController;
 use Illuminate\Support\Facades\Route;
@@ -15,7 +17,17 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
+
+
+Route::prefix('auth')->group(function () {
+    Route::get('google', [AuthController::class, 'redirectToGoogle']);
+    Route::get('google/callback', [AuthController::class, 'handleGoogleCallback']);
+    Route::post('logout', [AuthController::class, 'logout']);
+});
+
 Route::middleware('jao.key')->group(function () {
+
+    // Authentication API
     // Department API
     Route::prefix('departments')->group(function () {
         Route::get('/', [DepartmentController::class, 'index']);
@@ -44,11 +56,13 @@ Route::middleware('jao.key')->group(function () {
     Route::prefix('job-hirings')->group(function () {
         Route::get('/', [JobHiringController::class, 'index']);
         Route::post('/', [JobHiringController::class, 'store']);
-        // Route::patch(
-        //     '/{jobHiring}/form-versions',
-        //     [JobHiringController::class, 'attachFormVersion']
-        // );
         Route::get('/{jobHiring}', [JobHiringController::class, 'show']);
+        Route::get('/{jobHiring}/form-versions', [JobFormVersionAssignmentController::class, 'index']);
+        Route::post('/{jobHiring}/form-versions', [JobFormVersionAssignmentController::class, 'store']);
+
+        Route::delete('/{jobHiring}/form-versions/{formVersion}', [JobFormVersionAssignmentController::class, 'destroy']);
+
+
         Route::patch('/{jobHiring}', [JobHiringController::class, 'update']);
         Route::delete('/{jobHiring}', [JobHiringController::class, 'destroy']);
     });
