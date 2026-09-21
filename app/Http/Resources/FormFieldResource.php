@@ -31,6 +31,9 @@ class FormFieldResource extends JsonResource
                     'title' => $this->formSection->title,
                 ];
             }),
+            'options' => FormFieldOptionResource::collection(
+                $this->whenLoaded('formFieldOptions')
+            ),
         ];
     }
 }

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 //use App\Models\User;
+
+use App\Models\FormSection;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -29,6 +31,7 @@ class DatabaseSeeder extends Seeder
             JobHiringSeed::class,
             FormTemplateSeed::class,
             FormVersionSeed::class,
+            FormSection::class,
             JobHiringFormVersionSeed::class
         ]);
     }

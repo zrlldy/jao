@@ -104,6 +104,7 @@ Route::middleware('jao.key')->group(function () {
             Route::get('/', [FormFieldController::class, 'index']);
             Route::post('/', [FormFieldController::class, 'store']);
         });
+
         Route::prefix('form-fields')->group(function () {
             Route::get('/{formField}', [FormFieldController::class, 'show']);
             Route::patch('/{formField}', [FormFieldController::class, 'update']);
@@ -115,6 +116,7 @@ Route::middleware('jao.key')->group(function () {
             Route::get('/', [FormFieldOptionController::class, 'index']);
             Route::post('/', [FormFieldOptionController::class, 'store']);
         });
+
         Route::prefix('form-field-options')->group(function () {
             Route::get('/{formFieldOption}', [FormFieldOptionController::class, 'show']);
             Route::patch('/{formFieldOption}', [FormFieldOptionController::class, 'update']);
@@ -130,6 +132,18 @@ Route::middleware('jao.key')->group(function () {
             'store'
         ]);
     });
+
+
+
+    Route::prefix('invitations/{invitation}/application-form-answer')->group(function () {
+        Route::post('/', [
+            ApplicationInvitationController::class,
+            'store'
+        ]);
+    });
+
+
+
 
     Route::prefix('/applicant')->group(function () {
         Route::get('/', [ApplicationController::class, 'index']);

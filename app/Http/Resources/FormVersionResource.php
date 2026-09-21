@@ -23,7 +23,10 @@ class FormVersionResource extends JsonResource
             ]),
             'version' => $this->version,
             'status' => $this->status,
-            'published_at' => $this->published_at,
+            // 'published_at' => $this->published_at,
+            'sections' => FormsSectionResource::collection(
+                $this->whenLoaded('formSections')
+            )
         ];
     }
 }

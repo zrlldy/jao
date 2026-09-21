@@ -28,6 +28,9 @@ class FormsSectionResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'sort_order' => $this->sort_order,
+            'fields' => FormFieldResource::collection(
+                $this->whenLoaded('formFields')
+            ),
         ];
     }
 }
