@@ -12,17 +12,17 @@ class CreateJobHiringRequest extends FormRequest
      */
     public function authorize(): bool
     {
+return true;
+        // $header = config('services.api.header');
+        // $expectedApiKey = config('services.jao.api_key');
+        // $apiKey = $this->header($header);
 
-        $header = config('services.api.header');
-        $expectedApiKey = config('services.jao.api_key');
-        $apiKey = $this->header($header);
 
+        // if (!is_string($expectedApiKey) || !is_string($apiKey)) {
+        //     return false;
+        // }
 
-        if (!is_string($expectedApiKey) || !is_string($apiKey)) {
-            return false;
-        }
-
-        return hash_equals($expectedApiKey, $apiKey);
+        // return hash_equals($expectedApiKey, $apiKey);
     }
 
     /**

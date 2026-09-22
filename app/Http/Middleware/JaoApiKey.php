@@ -27,7 +27,7 @@ class JaoApiKey
             !is_string($expectedKey) ||
             !hash_equals($expectedKey, $apiKey)
         ) {
-//            return redirect('https://www.eastequatorexpress.com/');
+        //    return redirect('https://www.eastequatorexpress.com/');
             return response()->json([
                 'message' => 'Unauthorized.',
             ], 401);
