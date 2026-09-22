@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FormVersionResource;
 use App\Models\ApplicationInvitation;
 use App\Models\FormVersion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ApplicationForm extends Controller
 {
@@ -15,14 +17,28 @@ class ApplicationForm extends Controller
     {
 
 
-        $applicationJob =  ApplicationInvitation::where('tokenHash', $token)->where('expired_at', '<=', now()->subDays(7))
+        $applicationJob = ApplicationInvitation::where('token', $token)
+            ->where('expired_at', '>', now())
             ->select('job_hiring_id')
-            ->exists();
+            ->firstOrFail();
+
+        // dd($applicationJob);
 
 
-        $form = FormVersion::with('jobHirings', 'formTemplate', 'formSections.formFields.formFieldOptions')->where('status', 'published')->whereHas('jobHirings', function ($query) use ($applicationJob) {
-            $query->where('job_hiring_id', $applicationJob);
-        })->first();
+        $form = FormVersion::with([
+            'jobHirings',
+            'formTemplate',
+            'formSections.formFields.formFieldOptions',
+        ])
+            ->where('status', 'published')
+            ->whereHas('jobHirings', function ($query) use ($applicationJob) {
+                $query->where('job_hiring_id', $applicationJob->job_hiring_id);
+            })
+            ->firstOrFail();
+
+        return $form;
+
+        // return new FormVersionResource($form);
     }
 
     /**

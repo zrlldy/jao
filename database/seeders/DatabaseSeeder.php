@@ -29,9 +29,12 @@ class DatabaseSeeder extends Seeder
             DepartmentSeed::class,
             LocationSeed::class,
             JobHiringSeed::class,
+            ApplicationInvitationSeed::class,
             FormTemplateSeed::class,
             FormVersionSeed::class,
-            FormSection::class,
+            FormSectionSeeder::class,
+            FormFieldSeed::class,
+            FormFieldOptionSeed::class,
             JobHiringFormVersionSeed::class
         ]);
     }

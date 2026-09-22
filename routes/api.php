@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApplicationAnswerController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\ApplicationForm;
 use App\Http\Controllers\ApplicationInvitationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
@@ -149,6 +150,14 @@ Route::middleware('jao.key')->group(function () {
         Route::get('/', [ApplicationController::class, 'index']);
         Route::post('/', [ApplicationController::class, 'store']);
     });
+
+
+    Route::prefix('applicant-invitation/form')->group(function () {
+        Route::get('/{token}', [ApplicationForm::class, 'index']);
+    });
+
+
+
 
     Route::prefix('/applicant/{Applicant}/application-answer')->group(function () {
         Route::get('/', [ApplicationAnswerController::class, 'index']);

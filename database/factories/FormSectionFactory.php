@@ -20,7 +20,8 @@ class FormSectionFactory extends Factory
     {
         return [
             'form_version_id' => FormVersion::factory(),
-            'description' => fake()->sentences(),
+            'title' => fake()->title(),
+            'description' => fake()->sentence(),
             'sort_order' => fake()->randomNumber()
         ];
     }

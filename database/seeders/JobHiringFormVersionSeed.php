@@ -15,7 +15,7 @@ class JobHiringFormVersionSeed extends Seeder
     public function run(): void
     {
         $jobHiring = JobHiring::factory()->create();
-        $formVersions = FormVersion::factory(3)->create();
+        $formVersions = FormVersion::factory()->create();
         $jobHiring->formVersions()->attach(
             $formVersions->pluck('id')
         );
