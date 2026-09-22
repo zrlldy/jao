@@ -13,9 +13,11 @@ class JobHiringController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $jobHiring = JobHiring::with('department:id,name', 'employmentType:id,name', 'location:id,name')->select('id', 'department_id', 'employment_type_id', 'location_id', 'title', 'slug', 'description', 'requirements', 'status', 'published_at', 'closed_at')->paginate(10);
+        $jobHiring = JobHiring::with(['department:id,name', 'employmentType:id,name', 'location:id,name'])->select(['id', 'department_id', 'employment_type_id', 'location_id', 'title', 'slug', 'description', 'requirements', 'status', 'published_at', 'closed_at'])
+            ->when($request->filled('department_id'), fn($query) => $query->where('department_id', $request->department_id))
+            ->paginate(10);
 
         return JobHiringResource::collection($jobHiring);
     }
