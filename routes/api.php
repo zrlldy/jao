@@ -127,7 +127,7 @@ Route::middleware('jao.key')->group(function () {
     });
 
     // Application Invitation API
-    Route::prefix('invitations')->group(function () {
+    Route::prefix('job-hirings/{jobHiring}/invitations')->group(function () {
         Route::post('/', [
             ApplicationInvitationController::class,
             'store'

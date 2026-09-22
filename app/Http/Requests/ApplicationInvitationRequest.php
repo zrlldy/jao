@@ -31,7 +31,7 @@ class ApplicationInvitationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'job_hiring_id' => ['uuid', 'required'],
+            // 'job_hiring_id' => ['uuid', 'required'],
             'email' => ['required', 'email', 'min:5']
         ];
     }

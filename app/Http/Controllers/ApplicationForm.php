@@ -16,29 +16,24 @@ class ApplicationForm extends Controller
     public function index(ApplicationInvitation $application, string $token)
     {
 
-
         $applicationJob = ApplicationInvitation::where('token', $token)
             ->where('expired_at', '>', now())
             ->select('job_hiring_id')
             ->firstOrFail();
 
-        // dd($applicationJob);
 
-
-        $form = FormVersion::with([
-            'jobHirings',
-            'formTemplate',
-            'formSections.formFields.formFieldOptions',
-        ])
+        $form = FormVersion::with(['jobHirings', 'formTemplate', 'formSections.formFields.formFieldOptions'])
             ->where('status', 'published')
             ->whereHas('jobHirings', function ($query) use ($applicationJob) {
                 $query->where('job_hiring_id', $applicationJob->job_hiring_id);
             })
-            ->firstOrFail();
+            ->first();
 
-        return $form;
+        // return $form; // should no longer be null
 
-        // return new FormVersionResource($form);
+
+
+        return new FormVersionResource($form);
     }
 
     /**

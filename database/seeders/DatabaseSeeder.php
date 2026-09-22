@@ -24,18 +24,32 @@ class DatabaseSeeder extends Seeder
         //            'email' => 'test@example.com',
         //        ]);
 
+        // $this->call([
+        //     EmploymentTypeSeed::class,
+        //     DepartmentSeed::class,
+        //     LocationSeed::class,
+        //     JobHiringSeed::class,
+        //     ApplicationInvitationSeed::class,
+        //     FormTemplateSeed::class,
+        //     FormVersionSeed::class,
+        //     FormSectionSeeder::class,
+        //     FormFieldSeed::class,
+        //     FormFieldOptionSeed::class,
+        //     JobHiringFormVersionSeed::class
+        // ]);
+        //
         $this->call([
             EmploymentTypeSeed::class,
             DepartmentSeed::class,
             LocationSeed::class,
-            JobHiringSeed::class,
-            ApplicationInvitationSeed::class,
-            FormTemplateSeed::class,
-            FormVersionSeed::class,
-            FormSectionSeeder::class,
-            FormFieldSeed::class,
-            FormFieldOptionSeed::class,
-            JobHiringFormVersionSeed::class
+            JobHiringSeed::class,            // needs Department, Location, EmploymentType
+
+            FormVersionTreeSeeder::class,    // builds complete, standalone forms (template -> version -> sections -> fields -> options)
+            // doesn't need JobHiring at all — replaces the 5 disconnected seeders below
+
+            JobHiringFormVersionSeed::class, // attaches existing forms to existing job hirings — needs BOTH JobHiringSeed and FormVersionTreeSeeder to have run first
+
+            ApplicationInvitationSeed::class, // needs JobHiring to exist (see note below)
         ]);
     }
 }

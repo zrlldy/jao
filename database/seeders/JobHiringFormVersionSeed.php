@@ -14,10 +14,20 @@ class JobHiringFormVersionSeed extends Seeder
      */
     public function run(): void
     {
-        $jobHiring = JobHiring::factory()->create();
-        $formVersions = FormVersion::factory()->create();
-        $jobHiring->formVersions()->attach(
-            $formVersions->pluck('id')
-        );
+        $jobHiringIds = JobHiring::pluck('id');
+        $formVersionIds = FormVersion::where('status', 'published')->pluck('id');
+
+        if ($jobHiringIds->isEmpty() || $formVersionIds->isEmpty()) {
+            $this->command?->warn('Run JobHiringSeed and FormVersionTreeSeeder first.');
+            return;
+        }
+
+        foreach ($jobHiringIds as $jobHiringId) {
+            $randomFormVersionIds = $formVersionIds->random(min(2, $formVersionIds->count()));
+
+            JobHiring::find($jobHiringId)
+                ->formVersions()
+                ->syncWithoutDetaching($randomFormVersionIds);
+        }
     }
 }

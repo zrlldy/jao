@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ApplicationInvitationRequest;
 use App\Jobs\SendApplicantInvitation;
 use App\Models\ApplicationInvitation;
+use App\Models\JobHiring;
 use App\Notifications\ApplicationInviteNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,17 +27,15 @@ class ApplicationInvitationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ApplicationInvitationRequest $request)
+    public function store(JobHiring $jobHiring, ApplicationInvitationRequest $request)
     {
         $data = $request->validated();
         $token =  Str::random(64);
 
-        // Create the application invitation
-        $invitation = ApplicationInvitation::create([
-            'job_hiring_id' => $data['job_hiring_id'],
-            'email' => $data['email'],
+        $invitation = $jobHiring->applicationInvitations()->create([
+            ...$data,
             'token' => hash('sha256', $token),
-            'expired_at' => Carbon::now()->addDays(7),
+            'expired_at' => Carbon::now()->addDays(7)
         ]);
 
         SendApplicantInvitation::dispatch($invitation, $token);
