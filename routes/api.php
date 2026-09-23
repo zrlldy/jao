@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-
 Route::prefix('auth')->group(function () {
     Route::get('google', [AuthController::class, 'redirectToGoogle']);
     Route::get('google/callback', [AuthController::class, 'handleGoogleCallback']);
@@ -64,7 +63,6 @@ Route::middleware('jao.key')->group(function () {
         Route::post('/{jobHiring}/form-versions', [JobFormVersionAssignmentController::class, 'store']);
 
         Route::delete('/{jobHiring}/form-versions/{formVersion}', [JobFormVersionAssignmentController::class, 'destroy']);
-
 
         Route::patch('/{jobHiring}', [JobHiringController::class, 'update']);
         Route::delete('/{jobHiring}', [JobHiringController::class, 'destroy']);
@@ -130,34 +128,25 @@ Route::middleware('jao.key')->group(function () {
     Route::prefix('job-hirings/{jobHiring}/invitations')->group(function () {
         Route::post('/', [
             ApplicationInvitationController::class,
-            'store'
+            'store',
         ]);
     });
-
-
 
     Route::prefix('invitations/{invitation}/application-form-answer')->group(function () {
         Route::post('/', [
             ApplicationInvitationController::class,
-            'store'
+            'store',
         ]);
     });
-
-
-
 
     Route::prefix('/applicant')->group(function () {
         Route::get('/', [ApplicationController::class, 'index']);
         Route::post('/', [ApplicationController::class, 'store']);
     });
 
-
     Route::prefix('applicant-invitation/form')->group(function () {
         Route::get('/{token}', [ApplicationForm::class, 'index']);
     });
-
-
-
 
     Route::prefix('/applicant/{Applicant}/application-answer')->group(function () {
         Route::get('/', [ApplicationAnswerController::class, 'index']);

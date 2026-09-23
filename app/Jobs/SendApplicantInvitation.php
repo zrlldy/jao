@@ -14,7 +14,7 @@ class SendApplicantInvitation implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public ApplicationInvitation $applicationInvitation ,public string $token )
+    public function __construct(public ApplicationInvitation $applicationInvitation, public string $token)
     {
         //
     }
@@ -24,6 +24,6 @@ class SendApplicantInvitation implements ShouldQueue
      */
     public function handle(): void
     {
-            $this->applicationInvitation->notify(new ApplicationInviteNotification($this->applicationInvitation,$this->token));
+        $this->applicationInvitation->notify(new ApplicationInviteNotification($this->applicationInvitation, $this->token));
     }
 }
