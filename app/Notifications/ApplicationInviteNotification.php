@@ -36,7 +36,7 @@ class ApplicationInviteNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $url = config('services.jao.url')
-            . '/application/invite/'
+            . '/application/form/'
             . $this->token;
 
         return (new MailMessage)
