@@ -12,7 +12,7 @@ class CreateApplicationAnswerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -23,7 +23,14 @@ class CreateApplicationAnswerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'form_version_id' => ['required', 'uuid', 'exists:form_versions,id'],
+            'answer' => ['array', 'required'],
+            'answers.*.form_field_id' => [
+                'required',
+                'uuid',
+                'exists:form_fields,id',
+            ],
+            'answers.*.value' => ['nullable'],
         ];
     }
 }

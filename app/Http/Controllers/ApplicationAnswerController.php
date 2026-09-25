@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateApplicationAnswerRequest;
 use App\Http\Resources\ApplicationAnswerResources;
 use App\Http\Resources\FormFieldResource;
 use App\Models\ApplicationAnswer;
@@ -12,23 +13,17 @@ class ApplicationAnswerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(ApplicationAnswer $applicationAnswer,)
+    public function index(ApplicationAnswer $applicationAnswer)
     {
 
         $applicationAnswer->load('application', 'formField')->select('id', 'value');
-
         return ApplicationAnswerResources::collection($applicationAnswer);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ApplicationAnswerResources $request)
-    {
-
-
-        // return new FormFieldResource();
-    }
+    public function store(CreateApplicationAnswerRequest $request) {}
 
     /**
      * Display the specified resource.

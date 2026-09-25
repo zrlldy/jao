@@ -8,25 +8,10 @@ use App\Models\ApplicationInvitation;
 use App\Models\JobHiring;
 use App\Notifications\ApplicationInviteNotification;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
-
-use function Symfony\Component\Clock\now;
 
 class ApplicationInvitationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(JobHiring $jobHiring, ApplicationInvitationRequest $request)
     {
         $data = $request->validated();
@@ -37,32 +22,9 @@ class ApplicationInvitationController extends Controller
             'token' => hash('sha256', $token),
             'expired_at' => Carbon::now()->addDays(7)
         ]);
-
         SendApplicantInvitation::dispatch($invitation, $token);
-
         return response()->json([
             'message' => 'Invitation sent to applicant'
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(ApplicationInvitation $applicationInvitation)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, ApplicationInvitation $applicationInvitation) {}
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ApplicationInvitation $applicationInvitation)
-    {
-        //
     }
 }
