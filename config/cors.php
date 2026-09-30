@@ -20,7 +20,7 @@ return [
     // 'allowed_origins' => ['http://localhost:3000', 'http://localhost:3002'],
 //    'allowed_origins' => config('services.jao.allowed_origins', []),
 
-'allowed_origins' => array_values(
+    'allowed_origins' => array_values(
         array_filter(
             array_map(
                 'trim',
