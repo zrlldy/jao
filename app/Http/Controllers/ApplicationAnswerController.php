@@ -17,13 +17,19 @@ class ApplicationAnswerController extends Controller
     {
 
         $applicationAnswer->load('application', 'formField')->select('id', 'value');
+
         return ApplicationAnswerResources::collection($applicationAnswer);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateApplicationAnswerRequest $request) {}
+    public function store(CreateApplicationAnswerRequest $request)
+    {
+
+
+        return response()->json(['message' => 'Application submitted successfully']);
+    }
 
     /**
      * Display the specified resource.

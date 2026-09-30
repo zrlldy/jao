@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Applicant;
+use App\Models\ApplicationInvitation;
 use App\Models\FormVersion;
 use App\Models\JobHiring;
 use Illuminate\Database\Migrations\Migration;
@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('applications', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('applicant_no');
-            $table->foreignUuidFor(Applicant::class)->constrained()->cascadeOnDelete();
+            $table->foreignUuidFor(ApplicationInvitation::class)->constrained()->cascadeOnDelete();
             $table->foreignUuidFor(JobHiring::class)->constrained()->cascadeOnDelete();
             $table->foreignUuidFor(FormVersion::class)->constrained()->cascadeOnDelete();
             $table->string('status');
@@ -25,8 +25,8 @@ return new class extends Migration
             $table->dateTime('reviewed_by')->nullable();
             $table->string('rejection_reason')->nullable();
             $table->dateTime('reviewed_at')->nullable();
-            $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
+            $table->timestamps();
         });
     }
 

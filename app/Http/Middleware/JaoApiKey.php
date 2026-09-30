@@ -17,7 +17,7 @@ class JaoApiKey
     {
         $expectedKey = config('services.jao.api_key');
         $header = config('services.api.header');
-        $allowedOrigins = config('services.jao.allowed_origins', []);
+        $allowedOrigins = explode(',', config('services.jao.allowed_origins', []));
 
         $apiKey = $request->header($header);
         $origin = $request->header('Origin');
@@ -27,7 +27,7 @@ class JaoApiKey
             !is_string($expectedKey) ||
             !hash_equals($expectedKey, $apiKey)
         ) {
-        //    return redirect('https://www.eastequatorexpress.com/');
+            //    return redirect('https://www.eastequatorexpress.com/');
             return response()->json([
                 'message' => 'Unauthorized.',
             ], 401);
