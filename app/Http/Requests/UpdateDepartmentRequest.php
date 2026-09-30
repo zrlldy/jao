@@ -12,15 +12,7 @@ class UpdateDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $header = config('services.api.header');
-        $apiKey = $this->header($header);
-        $expectedApiKey = config('services.jao.api_key');
-
-        if (!is_string($apiKey) || !is_string($expectedApiKey)) {
-            return false;
-        }
-
-        return hash_equals($expectedApiKey, $apiKey);
+       return true;
     }
 
     /**

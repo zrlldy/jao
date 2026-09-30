@@ -13,15 +13,7 @@ class UpdateLocationRequest extends FormRequest
     public function authorize(): bool
     {
 
-        $header = config('services.api.header');
-        $expectedApiKey = config('services.jao.api_key');
-        $apiKey = $this->header($header);
-
-        if (!is_string($apiKey) || !is_string($expectedApiKey)) {
-            return false;
-        }
-
-        return hash_equals($expectedApiKey, $apiKey);
+       return true;
     }
 
     /**

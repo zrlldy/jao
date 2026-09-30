@@ -12,7 +12,7 @@ class CreateApplicationAnswerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
     /**
      * Get the validation rules that apply to the request.

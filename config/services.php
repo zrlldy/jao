@@ -39,10 +39,7 @@ return [
     ],
     'jao' => [
         'api_key' => env("JAO_API_KEY"),
-        'allowed_origins' => [
-            env('ALLOWED_URL_FRONTEND_1'),
-            env('ALLOWED_URL_ADMIN_2'),
-        ],
+        'allowed_origins' => array_values(array_filter(array_map('trim', explode(',', env('ALLOWED_ORIGINS', ''))))),
         'url' => env("ALLOWED_URL_FRONTEND_1")
     ],
     'google' => [

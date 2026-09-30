@@ -17,11 +17,17 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
     'allowed_methods' => ['*'],
-    // 'allowed_origins' => ['http://localhost:3000', 'http://localhost:3001'],
-    'allowed_origins' => array_filter([
-        explode(',', env('ALLOWED_URL_FRONTEND_1')),
-        explode(',', env('ALLOWED_URL_ADMIN_2')),
-    ]),
+    // 'allowed_origins' => ['http://localhost:3000', 'http://localhost:3002'],
+//    'allowed_origins' => config('services.jao.allowed_origins', []),
+
+'allowed_origins' => array_values(
+        array_filter(
+            array_map(
+                'trim',
+                explode(',', env('ALLOWED_ORIGINS', ''))
+            )
+        )
+    ),
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],

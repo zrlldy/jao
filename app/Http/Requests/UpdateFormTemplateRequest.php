@@ -12,15 +12,7 @@ class UpdateFormTemplateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $expectedApiKey = config('services.jao.api_key');
-
-        $header = config("services.api.header");
-        $apiKey = $this->header($header);
-
-        if (!is_string($expectedApiKey) || !is_string($apiKey)) {
-            return false;
-        }
-        return hash_equals($expectedApiKey, $apiKey);
+        return true;
     }
 
     /**
