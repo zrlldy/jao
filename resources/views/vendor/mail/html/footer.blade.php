@@ -19,8 +19,8 @@
                         </a>
                     </p>
 
-                    <a href="https://www.eastequatorexpress.com/">
-                        <p class=" powered-by">East Equator Express Inc.</p>
+                    <a href="https://www.eastequatorexpress.com/" style="text-decoration: none;">
+                        <p class="powered-by">East Equator Express Inc.</p>
                     </a>
                 </td>
             </tr>
