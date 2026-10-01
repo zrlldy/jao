@@ -13,6 +13,12 @@ class Onboarding extends Model
 
     protected $guarded = [];
 
+
+    public function onboardingInvitation(): HasMany
+    {
+        return $this->hasMany(OnboardingInvitation::class);
+    }
+
     public function application(): BelongsTo
     {
         return $this->belongsTo(Application::class);

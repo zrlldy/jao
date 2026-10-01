@@ -14,6 +14,7 @@ class CreateApplicationAnswerRequest extends FormRequest
     {
         return true;
     }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,7 +24,7 @@ class CreateApplicationAnswerRequest extends FormRequest
     {
         return [
             'form_version_id' => ['required', 'uuid', 'exists:form_versions,id'],
-            'answer' => ['array', 'required'],
+            'answers' => ['array', 'required'],
             'answers.*.form_field_id' => [
                 'required',
                 'uuid',

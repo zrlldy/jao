@@ -6,16 +6,40 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Application extends Model
 {
     use HasUuids;
 
     protected $guarded = [];
+    protected $casts = [
+        'submitted_at' => 'datetime',
+        'reviewed_at' => 'datetime',
+        'reviewed_by' => 'string',
+    ];
 
-    public function applicant(): BelongsTo
+    protected static function booted(): void
     {
-        return $this->belongsTo(Applicant::class);
+        static::creating(function ($application) {
+            do {
+                $applicationNo =
+                    '3E-APP-' .
+                    now()->format('Y') .
+                    '-' .
+                    Str::upper(Str::random(6));
+
+            } while (
+                static::where('application_no', $applicationNo)->exists()
+            );
+
+            $application->application_no = $applicationNo;
+        });
+    }
+
+    public function applicationInvitation(): BelongsTo
+    {
+        return $this->belongsTo(ApplicationInvitation::class);
     }
 
     public function jobHiring(): BelongsTo
@@ -42,10 +66,4 @@ class Application extends Model
     {
         return $this->hasMany(Onboarding::class);
     }
-
-    protected $casts = [
-        'submitted_at' => 'datetime',
-        'reviewed_at' => 'datetime',
-        'reviewed_by' => 'string',
-    ];
 }

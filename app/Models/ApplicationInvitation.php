@@ -14,6 +14,12 @@ class ApplicationInvitation extends Model
 
     protected $guarded = [];
 
+
+    public function application(): BelongsTo
+    {
+        return $this->belongsTo(Application::class);
+    }
+
     public function jobHiring(): BelongsTo
     {
         return $this->belongsTo(JobHiring::class);
