@@ -19,7 +19,9 @@
                         </a>
                     </p>
 
-                    <p class="powered-by">Powered by TriDevs</p>
+                    <a href="https://www.eastequatorexpress.com/">
+                        <p class=" powered-by">East Equator Express Inc.</p>
+                    </a>
                 </td>
             </tr>
         </table>
