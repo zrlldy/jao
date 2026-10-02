@@ -17,6 +17,7 @@ class FormVersionResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'job_hiring' => JobHiringResource::make($this->whenLoaded('jobHiring')),
             'form_template' => $this->whenLoaded('formTemplate', fn() => [
                 'id' => $this->formTemplate->id,
                 'name' => $this->formTemplate->name,

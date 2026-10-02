@@ -14,7 +14,7 @@ class ApplicationAnswerController extends Controller
     public function index(ApplicationAnswer $applicationAnswer)
     {
         $applicationAnswer->load('application', 'formField')->select('id', 'value');
-        
+
         return ApplicationAnswerResources::collection($applicationAnswer);
     }
 
@@ -31,7 +31,5 @@ class ApplicationAnswerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ApplicationAnswer $applicationAnswer)
-    {
-    }
+    public function show(ApplicationAnswer $applicationAnswer) {}
 }

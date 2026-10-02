@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Department extends Model
 {
-    use HasUuids,HasFactory;
+    use HasUuids, HasFactory;
 
     protected $guarded = [];
 
