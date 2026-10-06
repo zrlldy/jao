@@ -27,7 +27,7 @@ Route::prefix('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
-Route::middleware(['jao.key','web'])->group(function () {
+Route::middleware(['jao.key', 'web'])->group(function () {
 
     // Authentication API
     // Department API
