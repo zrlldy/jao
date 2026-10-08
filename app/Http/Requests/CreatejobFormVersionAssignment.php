@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Models\FormVersion;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class ApplicationInvitationRequest extends FormRequest
+class CreatejobFormVersionAssignment extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +25,8 @@ class ApplicationInvitationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'min:5']
+            'form_version_ids' => ['required', 'exists:form_version_id', 'uuid', Rule::exists(FormVersion::class, 'id')],
+            'form_version_ids.*' => ['sometimes,exists:form_version_id', 'uuid', Rule::exists(FormVersion::class, 'id')]
         ];
     }
 }

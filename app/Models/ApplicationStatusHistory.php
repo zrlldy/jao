@@ -10,7 +10,13 @@ class ApplicationStatusHistory extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'application_id',
+        'from_status',
+        'to_status',
+        'changed_by',
+        'remarks',
+    ];
 
     public function application(): BelongsTo
     {

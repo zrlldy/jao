@@ -9,9 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EmploymentType extends Model
 {
-    use HasUuids,HasFactory;
+    use HasFactory,HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'code',
+        'is_active',
+    ];
 
     public function jobHirings(): HasMany
     {

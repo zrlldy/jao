@@ -10,10 +10,15 @@ use Illuminate\Notifications\Notifiable;
 
 class ApplicationInvitation extends Model
 {
-    use HasUuids, Notifiable, HasFactory;
+    use HasFactory, HasUuids, Notifiable;
 
-    protected $guarded = [];
-
+    protected $fillable = [
+        'job_hiring_id',
+        'email',
+        'token',
+        'expired_at',
+        'used_at',
+    ];
 
     public function application(): BelongsTo
     {

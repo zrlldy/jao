@@ -12,19 +12,18 @@ class ApplicationAnswerResources extends JsonResource
      *
      * @return array<string, mixed>
      */
-
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
             'applicant' => $this->whenLoaded('application', function () {
                 return [
-                    'application_id' => $this->applicaiton->application_id,
+                    'application_id' => $this->application->id,
                     'application_no' => $this->application->application_no,
                 ];
             }),
-            'form_field' => FormFieldOptionResource::make($this->whenLoaded('formField')),
-            'value' => $this->value
+            'form_field' => FormFieldResource::make($this->whenLoaded('formField')),
+            'value' => $this->value,
         ];
     }
 }

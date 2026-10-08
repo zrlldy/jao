@@ -9,9 +9,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Location extends Model
 {
-    use HasUuids, HasFactory;
+    use HasFactory, HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'code',
+        'address',
+        'province',
+        'hub',
+        'is_active',
+    ];
+
     protected $casts = [
         'is_active' => 'boolean',
     ];

@@ -9,9 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FormFieldOption extends Model
 {
-    use HasUuids, HasFactory;
+    use HasFactory, HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'form_field_id',
+        'value',
+        'label',
+        'sort_order',
+    ];
 
     public function formField(): BelongsTo
     {

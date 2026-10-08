@@ -5,13 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Resources\FormVersionResource;
 use App\Models\ApplicationInvitation;
 use App\Models\FormVersion;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Nette\Schema\Message;
 
-class ApplicationForm extends Controller
+class ApplicationFormController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,19 +15,13 @@ class ApplicationForm extends Controller
     public function index(string $token)
     {
         try {
-            $invitation = ApplicationInvitation::with('jobHiring:id', 'title')
-                ->where('token', $token)
-                ->where('expired_at', '>', now())
+
+            $hashedToken = hash('sha256', $token);
+            $invitation = ApplicationInvitation::with(['jobHiring:id,title'])
+                ->where('token', $hashedToken)
+                ->where('expired_at', '>=', now())
                 ->select('job_hiring_id')
                 ->firstOrFail();
-
-            if ($invitation->expired_at->isPast()) {
-                return response()->json([
-                    'message' => 'This invitation has expired'
-                ]);
-            }
-
-
 
             $form = FormVersion::with(['formTemplate', 'formSections.formFields.formFieldOptions'])
                 ->where('status', 'published')
@@ -40,11 +30,10 @@ class ApplicationForm extends Controller
                 })
                 ->first();
 
-
             return (new FormVersionResource($form))->additional(['job_hiring' => $invitation->jobHiring?->title]);
         } catch (ModelNotFoundException $e) {
             return response()->json([
-                "message" => 'Credentials Missmatch'
+                'message' => 'Credentials Missmatch',
             ], 401);
         }
     }

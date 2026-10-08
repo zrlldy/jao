@@ -2,8 +2,9 @@
 
 use App\Http\Controllers\ApplicationAnswerController;
 use App\Http\Controllers\ApplicationController;
-use App\Http\Controllers\ApplicationForm;
+use App\Http\Controllers\ApplicationFormController;
 use App\Http\Controllers\ApplicationInvitationController;
+use App\Http\Controllers\ApplicationSubmisionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmploymentTypeController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\FormVersionController;
 use App\Http\Controllers\JobFormVersionAssignmentController;
 use App\Http\Controllers\JobHiringController;
 use App\Http\Controllers\LocationController;
+use App\Models\Application;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -132,25 +134,18 @@ Route::middleware(['jao.key', 'web'])->group(function () {
         ]);
     });
 
-    Route::prefix('invitations/{invitation}/application-form-answer')->group(function () {
-        Route::post('/', [
-            ApplicationInvitationController::class,
-            'store',
-        ]);
+    Route::prefix('application-invitations/{token}')->group(function () {
+        Route::get('/form', [ApplicationFormController::class, 'index']);
+        Route::post('/submit', [ApplicationSubmisionController::class, 'store']);
     });
 
-    Route::prefix('/applicant')->group(function () {
-        Route::get('/', [ApplicationController::class, 'index']);
-        Route::post('/', [ApplicationController::class, 'store']);
-    });
-
-    Route::prefix('applicant-invitation/form')->group(function () {
-        Route::get('/{token}', [ApplicationForm::class, 'index']);
-    });
-
-    Route::prefix('/applicant/{Applicant}/application-answer')->group(function () {
+    Route::prefix('application/{application}/application-answer')->group(function () {
         Route::get('/', [ApplicationAnswerController::class, 'index']);
-        Route::post('/', [ApplicationAnswerController::class, 'store']);
         Route::get('/{applicationAnswer}', [ApplicationAnswerController::class, 'show']);
+    });
+
+    Route::prefix('application')->group(function () {
+        Route::get('/', [ApplicationController::class, 'index']);
+        Route::get('/{application}', [ApplicationController::class, 'show']);
     });
 });

@@ -12,7 +12,19 @@ class Application extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'applicant_no',
+        'application_invitation_id',
+        'job_hiring_id',
+        'form_version_id',
+        'status',
+        'submitted_at',
+        'reviewed_by',
+        'rejection_reason',
+        'reviewed_at',
+        'deleted_at',
+    ];
+
     protected $casts = [
         'submitted_at' => 'datetime',
         'reviewed_at' => 'datetime',
@@ -28,7 +40,6 @@ class Application extends Model
                     now()->format('Y') .
                     '-' .
                     Str::upper(Str::random(6));
-
             } while (
                 static::where('application_no', $applicationNo)->exists()
             );

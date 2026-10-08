@@ -23,7 +23,7 @@ class ApplicationResource extends JsonResource
             'status' => $this->status,
             'submitted_at' => $this->submitted_at,
             'reviewed_by' => $this->reviewed_by,
-            'deleted_at' => $this->deleted_at,
+            'deleted_at' => $this->whenNotNull($this->deleted_at),
         ];
     }
 }

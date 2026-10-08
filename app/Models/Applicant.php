@@ -9,11 +9,27 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Applicant extends Model
 {
-    use HasUuids, HasApiTokens;
+    use HasApiTokens, HasUuids;
 
     public $incrementing = false;
-    protected $guarded = [];
+
+    protected $fillable = [
+        'google_id',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'suffix',
+        'gender',
+        'address',
+        'email',
+        'phone_number',
+        'avatar_url',
+        'birth_date',
+        'email_verified_at',
+    ];
+
     protected $keyType = 'string';
+
     protected $casts = [
         'email_verified_at' => 'datetime',
         'last_login_at' => 'datetime',

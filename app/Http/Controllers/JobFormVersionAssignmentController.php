@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreatejobFormVersionAssignment;
 use App\Http\Resources\FormVersionResource;
 use App\Http\Resources\JobFormVersionAssignmentResource;
 use App\Http\Resources\JobHiringResource;
@@ -31,15 +32,14 @@ class JobFormVersionAssignmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, JobHiring $jobHiring)
+    public function store(CreatejobFormVersionAssignment $request, JobHiring $jobHiring)
     {
 
-        $data = $request->validate([
-            'form_version_ids' => ['required', 'exists:form_version_id', 'uuid'],
-            'form_version_ids.*' => ['sometimes,exists:form_version_id', 'uuid']
-        ]);
+        $data = $request->validated();
 
-        $jobHiring->formVersions()->syncWithoutDetaching($data['form_version_ids']);
+        $jobFormAssignment = $jobHiring->formVersions()->syncWithoutDetaching($data['form_version_ids']);
+
+        return new JobFormVersionAssignmentResource($jobFormAssignment);
     }
 
 

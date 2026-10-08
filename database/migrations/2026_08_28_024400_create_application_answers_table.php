@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuidFor(Application::class)->constrained()->cascadeOnDelete();
             $table->foreignUuidFor(FormField::class)->constrained()->cascadeOnDelete();
-            $table->text('value');
+            $table->text('value')->nullable();
             $table->timestamps();
         });
     }
