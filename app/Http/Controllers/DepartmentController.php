@@ -35,7 +35,7 @@ class DepartmentController extends Controller
     public function store(CreateDepartmentRequest $request)
     {
         $department = Department::create($request->validated());
-        return (new DepartmentResource($department))->additional(['message' => "{$department->name} successfully created"]);
+        return (new DepartmentResource($department));
     }
 
     /**
@@ -44,7 +44,7 @@ class DepartmentController extends Controller
     public function show(Department $department)
     {
 
-        return (new DepartmentResource($department))->additional(['message' => "{$department->name} successfully retrieved"]);
+        return (new DepartmentResource($department));
     }
 
     /**
@@ -56,10 +56,7 @@ class DepartmentController extends Controller
     ) {
         $department->update($request->validated());
 
-        return (new DepartmentResource($department))
-            ->additional([
-                'message' => "{$department->name} successfully updated",
-            ]);
+        return (new DepartmentResource($department));
     }
 
     /**
