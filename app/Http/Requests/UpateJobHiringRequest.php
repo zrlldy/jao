@@ -2,8 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Department;
+use App\Models\EmploymentType;
+use App\Models\Location;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpateJobHiringRequest extends FormRequest
 {
@@ -23,16 +27,16 @@ class UpateJobHiringRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'department_id' => "uuid|sometimes",
-            'location_id' => "uuid|sometimes",
-            'employment_type_id' => "uuid|sometimes",
-            "title" => "string|sometimes|max:20|min:3",
-            "slug" => "string|sometimes|max:100|min:5",
-            "description" => "string|sometimes|max:100|min:10",
-            "requirements" => "string|sometimes|max:100|min:10",
-            "status" => "string|sometimes|min:3|max:20",
-            "published_at" => "date|sometimes",
-            "closed_at" => "date|sometimes"
+            'department_id' => ["uuid", "sometimes", Rule::exists(Department::class, 'id')],
+            'location_id' => ["uuid", "sometimes", Rule::exists(Location::class, 'id')],
+            'employment_type_id' => ["uuid,", "sometimes", Rule::exists(EmploymentType::class, 'id')],
+            "title" => ["string", "sometimes", "max:100", "min:3"],
+            "slug" => ["string", "sometimes", "max:100", "min:5"],
+            "description" => ["string", "sometimes", "max:100", "min:10"],
+            "requirements" => ["string", "sometimes", "max:100", "min:10"],
+            "status" => ["string", "sometimes", "min:3", "max:100"],
+            "published_at" => ["date", "sometimes", 'after_or_equal:created_at'],
+            "closed_at" => ["date", "sometimes", 'after:published_at']
         ];
     }
 }

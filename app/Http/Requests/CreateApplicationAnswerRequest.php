@@ -31,7 +31,7 @@ class CreateApplicationAnswerRequest extends FormRequest
                 'uuid',
                 Rule::exists(FormVersion::class, 'id')
             ],
-            'answers' => ['array', 'nullable'],
+            'answers' => ['array', 'nullable',],
             'answers.*.form_field_id' => [
                 'required',
                 'uuid',

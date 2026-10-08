@@ -24,7 +24,7 @@ class UpdateFormVersionRequest extends FormRequest
     {
         return [
             'status' => ['sometimes', 'string', 'min:3', 'max:100'],
-            'published_at' => ['date', 'sometimes']
+            'published_at' => ['date', 'sometimes', 'after_or_equal:created_at']
         ];
     }
 }

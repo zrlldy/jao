@@ -12,7 +12,7 @@ class UpdateEmploymentTypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-       return true;
+        return true;
 
         // return false;
     }
@@ -25,12 +25,12 @@ class UpdateEmploymentTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string', 'sometimes', 'min:3', 'max:20'],
+            'name' => ['string', 'sometimes', 'min:3', 'max:100'],
             'code' => [
                 'string',
                 'sometimes',
                 'min:3',
-                'max:20'
+                'max:100'
             ],
             'is_active' => ['boolean', 'sometimes']
         ];

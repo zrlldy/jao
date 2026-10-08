@@ -12,7 +12,7 @@ class CreateEmploymentTypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-      return true;
+        return true;
     }
 
     /**
@@ -23,12 +23,12 @@ class CreateEmploymentTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string', 'required', 'min:3', 'max:20'],
+            'name' => ['string', 'required', 'min:3', 'max:100'],
             'code' => [
                 'string',
                 'required',
                 'min:3',
-                'max:20'
+                'max:100'
             ],
             'is_active' => ['boolean', 'required']
         ];

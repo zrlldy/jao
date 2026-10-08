@@ -12,7 +12,7 @@ class CreateLocationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-    return true;
+        return true;
     }
 
     /**
@@ -23,11 +23,11 @@ class CreateLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:3|max:20',
-            'code' => 'required|string|min:3|max:20',
-            'address' => 'required|string|min:3|max:20',
-            'province' => 'required|string|min:3|max:20',
-            'hub' => 'required|string|min:3|max:20',
+            'name' => 'required|string|min:3|max:100',
+            'code' => 'required|string|min:3|max:100',
+            'address' => 'required|string|min:3|max:100',
+            'province' => 'required|string|min:3|max:100',
+            'hub' => 'required|string|min:3|max:100',
             'is_active' => 'boolean|required'
         ];
     }

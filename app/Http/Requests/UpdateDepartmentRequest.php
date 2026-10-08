@@ -12,7 +12,7 @@ class UpdateDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-       return true;
+        return true;
     }
 
     /**
@@ -23,9 +23,9 @@ class UpdateDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|string|min:3|max:20',
-            'code' => 'sometimes|string|min:3|max:20',
-            'is_active' => 'sometimes|boolean'
+            'name' => ["sometimes", "string", "min:3", "max:100"],
+            'code' => ["sometimes", "string", "min:3", "max:100"],
+            'is_active' => ["sometimes", "boolean"]
         ];
     }
 }
