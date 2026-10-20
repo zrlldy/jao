@@ -10,7 +10,11 @@ class ApplicationAnswer extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'application_id',
+        'form_field_id',
+        'value',
+    ];
 
     public function application(): BelongsTo
     {

@@ -11,9 +11,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JobHiring extends Model
 {
-    use HasUuids, HasFactory;
+    use HasFactory, HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'department_id',
+        'location_id',
+        'employment_type_id',
+        'title',
+        'slug',
+        'description',
+        'requirements',
+        'status',
+        'published_at',
+        'closed_at',
+    ];
+
     protected $casts = [
         // 'is_active' => 'boolean',
         'published_at' => 'datetime',

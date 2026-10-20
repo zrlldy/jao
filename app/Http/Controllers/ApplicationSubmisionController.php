@@ -4,16 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateApplicationAnswerRequest;
 use App\Http\Resources\ApplicationAnswerResources;
-use App\Http\Resources\FormVersionResource;
 use App\Models\Application;
 use App\Models\ApplicationAnswer;
 use App\Models\ApplicationInvitation;
-use App\Models\FormVersion;
 use DB;
-use Illuminate\Http\Request;
 use Throwable;
 
-class ApplicationFormAnswerController extends Controller
+use function Symfony\Component\Clock\now;
+
+class ApplicationSubmisionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,18 +26,23 @@ class ApplicationFormAnswerController extends Controller
 
     /**
      * Store a newly created resource in storage.a
+     *
      * @throws Throwable
      */
     public function store(CreateApplicationAnswerRequest $request, string $token)
     {
 
-        $applicationInvitation = ApplicationInvitation::where('token', $token)->where('expired_at', '>=', now()->subDays(7))->firstOrFail();
+        $hashedToken = hash('sha256', $token);
+
+        $applicationInvitation = ApplicationInvitation::where('token', $hashedToken)->where('expired_at', '>=', now())->firstOrFail()
+            ->whereNull('used_at');
 
         DB::transaction(function () use ($request, $applicationInvitation) {
             $application = Application::create([
                 'application_invitation_id' => $applicationInvitation->id,
-                'job_id' => $applicationInvitation->jobHiring->job_id,
+                'job_hiring_id' => $applicationInvitation->jobHiring->id,
                 'form_version_id' => $request->form_version_id,
+                'status' => 'on_review',
                 'submitted_at' => now(),
             ]);
 
@@ -54,6 +58,8 @@ class ApplicationFormAnswerController extends Controller
                 ];
             }
             ApplicationAnswer::insert($answers);
+            $applicationInvitation->used_at = now();
+            $applicationInvitation->save();
         });
 
         return response()->json(['message' => 'Application submitted successfully']);
@@ -64,8 +70,8 @@ class ApplicationFormAnswerController extends Controller
      */
     public function show(ApplicationAnswer $applicationAnswer)
     {
-
         $applicationAnswer->load('formField', 'application');
+
         return new ApplicationAnswerResources($applicationAnswer);
     }
 }

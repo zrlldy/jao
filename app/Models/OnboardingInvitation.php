@@ -11,7 +11,13 @@ class OnboardingInvitation extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'onboarding_id',
+        'email',
+        'token',
+        'expired_at',
+        'used_at',
+    ];
 
     protected $casts = ['expired_at' => 'date', 'used_at' => 'date'];
 
@@ -19,5 +25,4 @@ class OnboardingInvitation extends Model
     {
         return $this->belongsTo(Onboarding::class);
     }
-
 }

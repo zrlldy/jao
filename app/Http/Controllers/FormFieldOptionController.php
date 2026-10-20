@@ -20,45 +20,46 @@ class FormFieldOptionController extends Controller
             'value',
             'sort_order'
         )->orderBy('sort_order')->get();
+
         return FormFieldOptionResource::collection($formFieldOptions);
     }
 
     public function store(CreateFormFieldOptionRequest $request, FormField $formField)
     {
-        $formFieldOption = $formField->formFieldOptions()->create([...$request->validated(),
-            'sort_order' => ($formField->formFieldOptions()->max('sort_order') ?? 0) + 1
+        $formFieldOption = $formField->formFieldOptions()->create([
+            ...$request->validated(),
+            'sort_order' => ($formField->formFieldOptions()->max('sort_order') ?? 0) + 1,
         ]);
 
         $formFieldOption->load('formField');
+
         return new FormFieldOptionResource($formFieldOption);
     }
 
     public function show(FormFieldOption $formFieldOption)
     {
         $formFieldOption = $formFieldOption->load('formField');
+
         return new FormFieldOptionResource($formFieldOption);
     }
 
     public function formFieldOptionsReorder(Request $request, FormFieldOption $formFieldOption)
     {
         $request->validate([
-            'sort_order' => 'required|integer'
+            'sort_order' => 'required|integer',
         ]);
 
         $oldSortOrder = $formFieldOption->sort_order;
         $newSortOrder = $request->input('sort_order');
         $formfield = $formFieldOption->form_field_id;
 
-
         if ($oldSortOrder !== $newSortOrder) {
             if ($oldSortOrder > $newSortOrder) {
-
 
                 FormFieldOption::where('form_field_id', $formfield)
                     ->where('sort_order', '<', $oldSortOrder)
                     ->where('sort_order', '>=', $newSortOrder)
                     ->increment('sort_order');
-
             } else {
                 FormFieldOption::where('form_field_id', $formfield)
                     ->where('sort_order', '>', $oldSortOrder)
@@ -69,22 +70,23 @@ class FormFieldOptionController extends Controller
         $formFieldOption->update(['sort_order' => $newSortOrder]);
 
         return response()->json([
-            'message' => 'Form Field option moved successfully'
+            'message' => 'Form Field option moved successfully',
         ]);
-
     }
 
     public function update(UpdateFormFieldOptionRequest $request, FormFieldOption $formFieldOption)
     {
         $formFieldOption->update($request->validated());
+
         return response()->json([
-            'message' => 'Form Field Option updated successfully'
+            'message' => 'Form Field Option updated successfully',
         ]);
     }
 
     public function destroy(FormFieldOption $formFieldOption)
     {
         $formFieldOption->delete();
+
         return response()->noContent();
     }
 }

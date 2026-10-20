@@ -10,7 +10,15 @@ class OnboardingRequirement extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'onboarding_template_version_id',
+        'name',
+        'description',
+        'is_required',
+        'max_submissions',
+        'sort_order',
+        'settings',
+    ];
 
     public function onboardingTemplateVersion(): BelongsTo
     {

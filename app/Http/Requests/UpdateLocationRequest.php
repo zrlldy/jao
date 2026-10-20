@@ -13,7 +13,7 @@ class UpdateLocationRequest extends FormRequest
     public function authorize(): bool
     {
 
-       return true;
+        return true;
     }
 
     /**
@@ -24,12 +24,12 @@ class UpdateLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|string|min:3|max:20',
-            'code' => 'sometimes|string|min:3|max:20',
-            'address' => 'sometimes|string|min:3|max:20',
-            'province' => 'sometimes|string|min:3|max:20',
-            'hub' => 'sometimes|string|min:3|max:20',
-            'is_active' => 'sometimes|required|boolean'
+            'name' => ['sometimes', 'string', 'min:3', 'max:100'],
+            'code' => ['sometimes', 'string', 'min:3', 'max:100'],
+            'address' => ['sometimes', 'string', 'min:3', 'max:100'],
+            'province' => ['sometimes', 'string', 'min:3', 'max:100'],
+            'hub' => ['sometimes', 'string', 'min:3', 'max:100'],
+            'is_active' => ['sometimes', 'required', 'boolean']
         ];
     }
 }

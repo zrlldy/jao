@@ -11,7 +11,12 @@ class OnboardingTemplateVersion extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'onboarding_template_id',
+        'version',
+        'status',
+        'published_at',
+    ];
 
     public function onboardingTemplate(): BelongsTo
     {

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateApplicationAnswerRequest;
 use App\Http\Resources\ApplicationAnswerResources;
+use App\Models\Application;
 use App\Models\ApplicationAnswer;
 
 class ApplicationAnswerController extends Controller
@@ -11,21 +11,20 @@ class ApplicationAnswerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(ApplicationAnswer $applicationAnswer)
+    public function index(Application $application)
     {
-        $applicationAnswer->load('application', 'formField')->select('id', 'value');
-        
-        return ApplicationAnswerResources::collection($applicationAnswer);
-    }
+        $applicationAnswers = $application
+            ->applicationAnswers()
+            ->with(['application', 'formField'])
+            ->select([
+                'id',
+                'application_id',
+                'form_field_id',
+                'value',
+            ])
+            ->paginate(10);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(CreateApplicationAnswerRequest $request)
-    {
-
-
-        return response()->json(['message' => 'Application submitted successfully']);
+        return ApplicationAnswerResources::collection($applicationAnswers);
     }
 
     /**
@@ -33,5 +32,6 @@ class ApplicationAnswerController extends Controller
      */
     public function show(ApplicationAnswer $applicationAnswer)
     {
+        return new ApplicationAnswerResources($applicationAnswer->load('application', 'formField'));
     }
 }

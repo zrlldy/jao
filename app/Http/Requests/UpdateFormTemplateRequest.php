@@ -23,9 +23,9 @@ class UpdateFormTemplateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => ['required', 'min:3', 'max:20',],
-            "description" => ['required', 'min:3', 'max:100',],
-            "is_active" => ['required', 'boolean'],
+            "name" => ['sometimes', 'min:3', 'max:100'],
+            "description" => ['sometimes', 'min:3', 'max:100',],
+            "is_active" => ['sometimes', 'boolean'],
         ];
     }
 }

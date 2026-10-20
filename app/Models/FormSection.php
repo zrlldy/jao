@@ -10,9 +10,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FormSection extends Model
 {
-    use HasUuids, HasFactory;
+    use HasFactory, HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'form_version_id',
+        'title',
+        'description',
+        'sort_order',
+    ];
 
     public function formVersion(): BelongsTo
     {

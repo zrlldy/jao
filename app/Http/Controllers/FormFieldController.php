@@ -32,7 +32,7 @@ class FormFieldController extends Controller
             'sort_order' => ($formSection->formFields->max('sort_order') ?? 0) + 1,
 
         ]);
-        $formField->load('formSection');
+        $formField->load('formVersion.formSections');
         return new FormFieldResource($formField);
     }
 

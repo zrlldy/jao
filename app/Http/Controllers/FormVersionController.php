@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateFormVersionRequest;
 use App\Http\Resources\FormVersionResource;
 use App\Models\FormTemplate;
 use App\Models\FormVersion;
+use Illuminate\Support\Facades\DB;
 
 class FormVersionController extends Controller
 {
@@ -31,16 +32,25 @@ class FormVersionController extends Controller
         CreateFormVersionRequest $request,
         FormTemplate             $formTemplate
     ) {
-        $nextVersion =
-            ($formTemplate->formVersions()->max('version') ?? 0) + 1;
 
-        $formVersion = $formTemplate->formVersions()->create([
-            ...$request->validated(),
-            'version' => $nextVersion,
-            'published_at' => today(),
-        ]);
+        DB::transaction(function () use ($request, $formTemplate) {
+            $lockedTemplate = FormTemplate::query()
+                ->whereKey($formTemplate->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        return new FormVersionResource($formVersion);
+            $latestVersion = $lockedTemplate->formVersions()
+                ->orderByDesc('version')
+                ->lockForUpdate()
+                ->value('version');
+
+
+            return $lockedTemplate->formVersions()->create([
+                ...$request->validated(),
+                'version' => ((int) ($latestVersion ?? 0)) + 1,
+                'published_at' => today(),
+            ]);
+        }, 3);
     }
 
     public function show(FormVersion $formVersion)

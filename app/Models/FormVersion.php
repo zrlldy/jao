@@ -11,9 +11,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FormVersion extends Model
 {
-    use HasUuids, HasFactory;
+    use HasFactory, HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'form_template_id',
+        'version',
+        'status',
+        'published_at',
+    ];
 
     public function formTemplate(): BelongsTo
     {

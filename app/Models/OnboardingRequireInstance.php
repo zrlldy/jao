@@ -11,7 +11,12 @@ class OnboardingRequireInstance extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'onboarding_id',
+        'status',
+        'submission_count',
+        'completed_at',
+    ];
 
     public function onboarding(): BelongsTo
     {

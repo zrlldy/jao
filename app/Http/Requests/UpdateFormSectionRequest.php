@@ -13,7 +13,7 @@ class UpdateFormSectionRequest extends FormRequest
     public function authorize(): bool
     {
 
-       return true;
+        return true;
     }
 
     /**
@@ -24,8 +24,8 @@ class UpdateFormSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['sometimes', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            'title' => ['sometimes', 'string', 'max:255', 'min:3'],
+            'description' => ['sometimes', 'string', 'max:255', 'min:3'],
         ];
     }
 }

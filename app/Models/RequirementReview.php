@@ -10,7 +10,13 @@ class RequirementReview extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'requirement_submission_id',
+        'reviewed_by',
+        'decision',
+        'remark',
+        'reviewed_at',
+    ];
 
     public function requirementSubmission(): BelongsTo
     {

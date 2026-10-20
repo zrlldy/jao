@@ -14,12 +14,14 @@ return new class extends Migration {
         Schema::create('form_versions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuidFor(FormTemplate::class)
+                ->unique()
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->unsignedInteger('version');
+            $table->unsignedInteger('version')->unique();
             $table->string('status');
             $table->date('published_at')->nullable();
             $table->timestamps();
+            $table->index('version');
         });
     }
 

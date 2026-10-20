@@ -10,7 +10,14 @@ class SubmissionFile extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'requirement_submission_id',
+        'original_name',
+        'file_path',
+        'mime_type',
+        'file_size',
+        'file_name',
+    ];
 
     public function requirementSubmission(): BelongsTo
     {

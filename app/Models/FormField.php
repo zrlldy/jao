@@ -10,13 +10,25 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FormField extends Model
 {
-    use HasUuids, HasFactory;
+    use HasFactory, HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'form_section_id',
+        'key',
+        'label',
+        'type',
+        'placeholder',
+        'default_value',
+        'is_required',
+        'sort_order',
+        'settings',
+        'validation_rules',
+    ];
+
     protected $casts = [
         'is_required' => 'boolean',
         'validation_rules' => 'array',
-        'settings' => 'array'
+        'settings' => 'array',
     ];
 
     public function formFieldOptions(): HasMany

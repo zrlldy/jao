@@ -11,7 +11,11 @@ class OnboardingTemplate extends Model
 {
     use HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'description',
+        'is_active',
+    ];
 
     public function onboardings(): HasMany
     {

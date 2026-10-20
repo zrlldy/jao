@@ -17,7 +17,7 @@ class LocationController extends Controller
     {
         $location = Location::select('id', 'name', 'code', 'address', 'province', 'hub', 'is_active')->paginate(10);
 
-        return LocationResource::collection($location)->additional(['message' => 'Location successfully retrieved']);
+        return LocationResource::collection($location);
         //
     }
 
@@ -27,7 +27,7 @@ class LocationController extends Controller
     public function store(CreateLocationRequest $request)
     {
         $location = Location::create($request->validated());
-        return (new LocationResource($location))->additional(['message' => 'Location created successfully!']);
+        return (new LocationResource($location));
         //
     }
 
