@@ -29,11 +29,13 @@ Route::prefix('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
+
 Route::middleware(['jao.key', 'web'])
     ->withoutMiddleware([
         \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
     ])
     ->group(function () {
+
 
     // Authentication API
     // Department API
