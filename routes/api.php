@@ -30,7 +30,11 @@ Route::prefix('auth')->group(function () {
 });
 
 
-Route::middleware(['jao.key', 'web'])->group(function () {
+Route::middleware(['jao.key', 'web'])
+    ->withoutMiddleware([
+        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
+    ])
+    ->group(function () {
 
 
     // Authentication API

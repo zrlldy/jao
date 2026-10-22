@@ -24,12 +24,12 @@ class CreateFormFieldRequest extends FormRequest
     {
         return [
             'key' => ['required', 'string', 'min:3', 'max:255'],
-            'label' => ['required', 'string', 'min:3', 'max:255'],
+            'label' => ['required', 'string', 'min:2', 'max:255'],
             'type' => ['required', 'string', 'min:3', 'max:50'],
             'placeholder' => ['nullable', 'string', 'max:255', 'min:3'],
             'default_value' => ['nullable', 'min:0', 'max:255'],
             'is_required' => ['sometimes', 'boolean'],
-            'settings' => ['nullable', 'array',],
+            'settings' => ['nullable', 'array'],
             'validation_rules' => ['nullable', 'array'],
         ];
     }

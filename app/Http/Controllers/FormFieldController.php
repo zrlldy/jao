@@ -18,6 +18,7 @@ class FormFieldController extends Controller
     public function index(FormSection $formSection)
     {
         $formField = $formSection->formFields()->select()->orderBy('sort_order')->get();
+
         return FormFieldResource::collection($formField);
     }
 
@@ -32,10 +33,10 @@ class FormFieldController extends Controller
             'sort_order' => ($formSection->formFields->max('sort_order') ?? 0) + 1,
 
         ]);
-        $formField->load('formVersion.formSections');
+        $formField->load('formSection');
+
         return new FormFieldResource($formField);
     }
-
 
     /**
      * Display the specified resource.
@@ -43,6 +44,7 @@ class FormFieldController extends Controller
     public function show(FormField $formField)
     {
         $formField = $formField->load('formSection');
+
         return new FormFieldResource($formField);
     }
 
@@ -52,6 +54,7 @@ class FormFieldController extends Controller
     public function destroy(FormField $formField)
     {
         $formField->delete();
+
         return response()->noContent();
     }
 
@@ -77,7 +80,6 @@ class FormFieldController extends Controller
             newSectionId: $validated['form_section_id'],
         );
 
-
         return response()->json([
             'message' => 'Form Field Reordered Successfully',
         ]);
@@ -89,6 +91,7 @@ class FormFieldController extends Controller
     public function update(UpdateFormFieldRequest $request, FormField $formField)
     {
         $formField->update($request->validated());
+
         return response()->json(
             ['message' => 'Form Field Updated']
         );
