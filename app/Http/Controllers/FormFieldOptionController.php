@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\FormFieldOption\ReorderFormFieldOption;
 use App\Http\Requests\CreateFormFieldOptionRequest;
 use App\Http\Requests\UpdateFormFieldOptionRequest;
 use App\Http\Resources\FormFieldOptionResource;
@@ -43,7 +44,7 @@ class FormFieldOptionController extends Controller
         return new FormFieldOptionResource($formFieldOption);
     }
 
-    public function formFieldOptionsReorder(Request $request, FormFieldOption $formFieldOption)
+    public function formFieldOptionsReorder(Request $request, FormFieldOption $formFieldOption, ReorderFormFieldOption $reorderFormFieldOption)
     {
         $request->validate([
             'sort_order' => 'required|integer',
@@ -51,24 +52,8 @@ class FormFieldOptionController extends Controller
 
         $oldSortOrder = $formFieldOption->sort_order;
         $newSortOrder = $request->input('sort_order');
-        $formfield = $formFieldOption->form_field_id;
 
-        if ($oldSortOrder !== $newSortOrder) {
-            if ($oldSortOrder > $newSortOrder) {
-
-                FormFieldOption::where('form_field_id', $formfield)
-                    ->where('sort_order', '<', $oldSortOrder)
-                    ->where('sort_order', '>=', $newSortOrder)
-                    ->increment('sort_order');
-            } else {
-                FormFieldOption::where('form_field_id', $formfield)
-                    ->where('sort_order', '>', $oldSortOrder)
-                    ->where('sort_order', '<=', $newSortOrder)
-                    ->decrement('sort_order');
-            }
-        }
-        $formFieldOption->update(['sort_order' => $newSortOrder]);
-
+        $reorderFormFieldOption->execute($formFieldOption, $oldSortOrder, $newSortOrder);
         return response()->json([
             'message' => 'Form Field option moved successfully',
         ]);

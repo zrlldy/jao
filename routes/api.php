@@ -5,7 +5,6 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationFormController;
 use App\Http\Controllers\ApplicationInvitationController;
 use App\Http\Controllers\ApplicationSubmisionController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmploymentTypeController;
 use App\Http\Controllers\FormFieldController;
