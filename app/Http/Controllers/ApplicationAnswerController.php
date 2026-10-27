@@ -30,7 +30,7 @@ class ApplicationAnswerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ApplicationAnswer $applicationAnswer)
+    public function show(Application $application, ApplicationAnswer $applicationAnswer): ApplicationAnswerResources
     {
         return new ApplicationAnswerResources($applicationAnswer->load('application', 'formField'));
     }

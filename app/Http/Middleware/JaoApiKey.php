@@ -11,21 +11,25 @@ class JaoApiKey
     public function handle(Request $request, Closure $next): Response
     {
         $expectedKey = config('services.jao.api_key');
-        $header = config('services.api.header');
+        $header = config('services.api.header') ?? 'X-API-Key';
 
+        if (! is_string($header) || trim($header) === '') {
+            return response()->json(['message' => 'Unauthorized.'], 401);
+        }
 
         $apiKey = $request->header($header);
 
-        // Validate API key
         if (
-            !is_string($apiKey) ||
-            !is_string($expectedKey) ||
-            !hash_equals($expectedKey, $apiKey)
+            ! is_string($apiKey) ||
+            ! is_string($expectedKey) ||
+            trim($expectedKey) === '' ||
+            ! hash_equals($expectedKey, $apiKey)
         ) {
             return response()->json([
                 'message' => 'Unauthorized.',
             ], 401);
         }
+
         return $next($request);
     }
 }
