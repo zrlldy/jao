@@ -4,7 +4,7 @@ use App\Http\Controllers\ApplicationAnswerController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationFormController;
 use App\Http\Controllers\ApplicationInvitationController;
-use App\Http\Controllers\ApplicationSubmisionController;
+use App\Http\Controllers\ApplicationSubmissionController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmploymentTypeController;
 use App\Http\Controllers\FormFieldController;
@@ -15,7 +15,6 @@ use App\Http\Controllers\FormVersionController;
 use App\Http\Controllers\JobFormVersionAssignmentController;
 use App\Http\Controllers\JobHiringController;
 use App\Http\Controllers\LocationController;
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['jao.key', 'web'])->group(function () {
@@ -61,8 +60,10 @@ Route::middleware(['jao.key', 'web'])->group(function () {
 
     Route::prefix('application-invitations/{token}')->name('application-invitations.')->group(function () {
         Route::get('form', [ApplicationFormController::class, 'index'])->name('form.show');
-        Route::post('submissions', [ApplicationSubmisionController::class, 'store'])->name('submissions.store');
+        Route::post('submissions', [ApplicationSubmissionController::class, 'store'])->name('submissions.store');
     });
 
     Route::apiResource('applications', ApplicationController::class)->only(['index', 'show']);
-})->withoutMiddleware(PreventRequestForgery::class);
+});
+
+//    ->withoutMiddleware(PreventRequestForgery::class);

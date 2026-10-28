@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreatejobFormVersionAssignment;
+use App\Http\Requests\CreateJobFormVersionAssignment;
 use App\Http\Resources\FormVersionResource;
 use App\Http\Resources\JobFormVersionAssignmentResource;
-use App\Http\Resources\JobHiringResource;
 use App\Models\FormVersion;
 use App\Models\JobHiring;
-use Illuminate\Http\Request;
 
 class JobFormVersionAssignmentController extends Controller
 {
@@ -25,24 +23,26 @@ class JobFormVersionAssignmentController extends Controller
                     'id' => $jobHiring->id,
                     'title' => $jobHiring->title,
                 ],
-            ])
-        ;
+            ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreatejobFormVersionAssignment $request, JobHiring $jobHiring)
+    public function store(CreateJobFormVersionAssignment $request, JobHiring $jobHiring)
     {
 
-        $data = $request->validated();
+        $ids = $request->validated('form_version_ids');
 
-        $jobFormAssignment = $jobHiring->formVersions()->syncWithoutDetaching($data['form_version_ids']);
+        $jobFormAssignment = $jobHiring->formVersions()->syncWithoutDetaching($ids
+        );
 
-        return new JobFormVersionAssignmentResource($jobFormAssignment);
+        $versions = $jobHiring->formVersions()
+            ->whereIn('form_versions.id', $ids)
+            ->get();
+
+        return new JobFormVersionAssignmentResource($versions);
     }
-
-
 
     /**
      * Remove the specified resource from storage.

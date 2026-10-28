@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\Department;
-use App\Models\EmploymentType;
-use App\Models\Location;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('job_hirings', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuidFor(Department::class)->constrained()->cascadeOnDelete();
-            $table->foreignUuidFor(Location::class)->constrained()->cascadeOnDelete();
-            $table->foreignUuidFor(EmploymentType::class)->constrained()->cascadeOnDelete();
+            $table->string('department');
+            $table->string('location');
+            $table->enum('employment_type', ['full-time', 'part-time', 'contract', 'internship']);
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description');

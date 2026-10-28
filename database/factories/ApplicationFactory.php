@@ -4,11 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Application;
 use App\Models\ApplicationInvitation;
-use App\Models\Department;
-use App\Models\EmploymentType;
 use App\Models\FormVersion;
 use App\Models\JobHiring;
-use App\Models\Location;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,12 +21,7 @@ class ApplicationFactory extends Factory
     public function definition(): array
     {
         return [
-            'application_invitation_id' => ApplicationInvitation::factory()->for(
-                JobHiring::factory()
-                    ->for(Department::factory())
-                    ->for(Location::factory())
-                    ->for(EmploymentType::factory())
-            ),
+            'application_invitation_id' => ApplicationInvitation::factory()->for(JobHiring::factory()),
             'job_hiring_id' => fn (array $attributes): string => ApplicationInvitation::findOrFail($attributes['application_invitation_id'])->job_hiring_id,
             'form_version_id' => FormVersion::factory(),
             'status' => 'on_review',

@@ -2,10 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Department;
-use App\Models\EmploymentType;
-use App\Models\JobHiring;
-use App\Models\Location;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,25 +15,22 @@ class CreateJobHiringRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'department_id' => [
+            'department' => [
                 'required',
-                'uuid',
-                'exists:departments,id',
-                Rule::exists(Department::class, 'id'),
+                'string',
+                'min:3',
+                'max:100',
             ],
-
-            'location_id' => [
+            'location' => [
                 'required',
-                'uuid',
-                'exists:locations,id',
-                Rule::exists(Location::class, 'id')
+                'string',
+                'min:3',
+                'max:100',
             ],
-
-            'employment_type_id' => [
+            'employment_type' => [
                 'required',
-                'uuid',
-                'exists:employment_types,id',
-                Rule::exists(EmploymentType::class, 'id')
+                'string',
+                Rule::in(['full-time', 'part-time', 'contract', 'internship']),
             ],
 
             'title' => [
@@ -45,16 +38,6 @@ class CreateJobHiringRequest extends FormRequest
                 'string',
                 'min:3',
                 'max:100',
-            ],
-
-            'slug' => [
-                'required',
-                'string',
-                'min:3',
-                'max:150',
-                'alpha_dash',
-                'unique:job_hirings,slug',
-                Rule::unique(JobHiring::class, 'slug')
             ],
 
             'description' => [
@@ -84,7 +67,7 @@ class CreateJobHiringRequest extends FormRequest
             'published_at' => [
                 'nullable',
                 'date',
-                'after_or_equal:created_at'
+                'after_or_equal:created_at',
             ],
 
             'closed_at' => [
