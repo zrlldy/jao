@@ -9,7 +9,6 @@ use App\Models\ApplicationAnswer;
 use App\Models\ApplicationInvitation;
 use DB;
 use Throwable;
-
 use function Symfony\Component\Clock\now;
 
 class ApplicationSubmisionController extends Controller
@@ -34,8 +33,8 @@ class ApplicationSubmisionController extends Controller
 
         $hashedToken = hash('sha256', $token);
 
-        $applicationInvitation = ApplicationInvitation::where('token', $hashedToken)->where('expired_at', '>=', now())->firstOrFail()
-            ->whereNull('used_at');
+        $applicationInvitation = ApplicationInvitation::where('token', $hashedToken)->where('expired_at', '>=', now())
+            ->whereNull('used_at')->firstOrFail();
 
         DB::transaction(function () use ($request, $applicationInvitation) {
             $application = Application::create([
