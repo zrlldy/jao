@@ -20,7 +20,7 @@ class ApplicationFormController extends Controller
             $invitation = ApplicationInvitation::with(['jobHiring:id,title'])
                 ->where('token', $hashedToken)
                 ->where('expired_at', '>=', now())
-                ->select('job_hiring_id')
+                ->select('job_hiring_id', 'email')
                 ->firstOrFail();
 
             $form = FormVersion::with(['formTemplate', 'formSections.formFields.formFieldOptions'])
@@ -30,7 +30,7 @@ class ApplicationFormController extends Controller
                 })
                 ->first();
 
-            return (new FormVersionResource($form))->additional(['job_hiring' => $invitation->jobHiring?->title]);
+            return (new FormVersionResource($form))->additional(['job_hiring' => $invitation->jobHiring?->title, 'email' => $invitation->email]);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Credentials Missmatch',

@@ -16,21 +16,9 @@ class JobHiringResource extends JsonResource
     {
         return [
             'id' => $this->id,
-
-            'department' => $this->whenLoaded('department', fn() => [
-                'id' => $this->department->id,
-                'name' => $this->department->name,
-            ]),
-
-            'location' => $this->whenLoaded('location', fn() => [
-                'id' => $this->location->id,
-                'name' => $this->location->name,
-            ]),
-
-            'employmentType' => $this->whenLoaded('employmentType', fn() => [
-                'id' => $this->employmentType->id,
-                'name' => $this->employmentType->name,
-            ]),
+            'department' => $this->department,
+            'location' => $this->location,
+            'employmentType' => $this->employment_type,
 
             'title' => $this->title,
             'slug' => $this->slug,

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CreatejobFormVersionAssignment extends FormRequest
+class CreateJobFormVersionAssignment extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,8 @@ class CreatejobFormVersionAssignment extends FormRequest
     public function rules(): array
     {
         return [
-            'form_version_ids' => ['required', 'exists:form_version_id', 'uuid', Rule::exists(FormVersion::class, 'id')],
-            'form_version_ids.*' => ['sometimes,exists:form_version_id', 'uuid', Rule::exists(FormVersion::class, 'id')]
+            'form_version_ids' => ['required', 'array', 'min:1'],
+            'form_version_ids.*' => ['required', 'uuid', 'distinct', Rule::exists(FormVersion::class, 'id')]
         ];
     }
 }

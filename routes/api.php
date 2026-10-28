@@ -4,8 +4,7 @@ use App\Http\Controllers\ApplicationAnswerController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationFormController;
 use App\Http\Controllers\ApplicationInvitationController;
-use App\Http\Controllers\ApplicationSubmisionController;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ApplicationSubmissionController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmploymentTypeController;
 use App\Http\Controllers\FormFieldController;
@@ -16,142 +15,55 @@ use App\Http\Controllers\FormVersionController;
 use App\Http\Controllers\JobFormVersionAssignmentController;
 use App\Http\Controllers\JobHiringController;
 use App\Http\Controllers\LocationController;
-use App\Models\Application;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+Route::middleware(['jao.key', 'web'])->group(function () {
+    Route::apiResources([
+        'departments' => DepartmentController::class,
+        'employment-types' => EmploymentTypeController::class,
+        'locations' => LocationController::class,
+        'job-hirings' => JobHiringController::class,
+        'form-templates' => FormTemplateController::class,
+    ]);
 
-Route::prefix('auth')->group(function () {
-    Route::get('google', [AuthController::class, 'redirectToGoogle']);
-    Route::get('google/callback', [AuthController::class, 'handleGoogleCallback']);
-    Route::post('logout', [AuthController::class, 'logout']);
-});
+    Route::apiResource('job-hirings.form-versions', JobFormVersionAssignmentController::class)
+        ->only(['index', 'store', 'destroy']);
 
+    Route::apiResource('job-hirings.invitations', ApplicationInvitationController::class)
+        ->only(['store']);
 
-Route::middleware(['jao.key', 'web'])
-    ->withoutMiddleware([
-        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
-    ])
-    ->group(function () {
-
-
-    // Authentication API
-    // Department API
-    Route::prefix('departments')->group(function () {
-        Route::get('/', [DepartmentController::class, 'index']);
-        Route::post('/', [DepartmentController::class, 'store']);
-        Route::get('/{department}', [DepartmentController::class, 'show']);
-        Route::patch('/{department}', [DepartmentController::class, 'update']);
-        Route::delete('/{department}', [DepartmentController::class, 'destroy']);
-    });
-    // Employment Type API
-    Route::prefix('employment-types')->group(function () {
-        Route::get('/', [EmploymentTypeController::class, 'index']);
-        Route::post('/', [EmploymentTypeController::class, 'store']);
-        Route::get('/{employmentType}', [EmploymentTypeController::class, 'show']);
-        Route::patch('/{employmentType}', [EmploymentTypeController::class, 'update']);
-        Route::delete('/{employmentType}', [EmploymentTypeController::class, 'destroy']);
-    });
-    // Location API
-    Route::prefix('locations')->group(function () {
-        Route::get('/', [LocationController::class, 'index']);
-        Route::post('/', [LocationController::class, 'store']);
-        Route::get('/{location}', [LocationController::class, 'show']);
-        Route::patch('/{location}', [LocationController::class, 'update']);
-        Route::delete('/{location}', [LocationController::class, 'destroy']);
-    });
-    // Job Hiring API
-    Route::prefix('job-hirings')->group(function () {
-        Route::get('/', [JobHiringController::class, 'index']);
-        Route::post('/', [JobHiringController::class, 'store']);
-        Route::get('/{jobHiring}', [JobHiringController::class, 'show']);
-        Route::get('/{jobHiring}/form-versions', [JobFormVersionAssignmentController::class, 'index']);
-        Route::post('/{jobHiring}/form-versions', [JobFormVersionAssignmentController::class, 'store']);
-
-        Route::delete('/{jobHiring}/form-versions/{formVersion}', [JobFormVersionAssignmentController::class, 'destroy']);
-
-        Route::patch('/{jobHiring}', [JobHiringController::class, 'update']);
-        Route::delete('/{jobHiring}', [JobHiringController::class, 'destroy']);
-    });
-    // Form Template API
-    Route::prefix('form-templates')->group(function () {
-        Route::get('/', [FormTemplateController::class, 'index']);
-        Route::post('/', [FormTemplateController::class, 'store']);
-        Route::get('/{formTemplate}', [FormTemplateController::class, 'show']);
-        Route::patch('/{formTemplate}', [FormTemplateController::class, 'update']);
-        Route::delete('/{formTemplate}', [FormTemplateController::class, 'destroy']);
-    });
-    // Nested API
     Route::scopeBindings()->group(function () {
-        // Form Version API
-        Route::prefix('form-templates/{formTemplate}/form-versions')->group(function () {
-            Route::get('/', [FormVersionController::class, 'index']);
-            Route::post('/', [FormVersionController::class, 'store']);
-        });
-        Route::prefix('form-versions')->group(function () {
-            Route::get('/{formVersion}', [FormVersionController::class, 'show']);
-            Route::patch('/{formVersion}', [FormVersionController::class, 'update']);
-            Route::delete('/{formVersion}', [FormVersionController::class, 'destroy']);
-        });
-        // Form Section API
-        Route::prefix('form-versions/{formVersion}/form-sections')->group(function () {
-            Route::get('/', [FormSectionController::class, 'index']);
-            Route::post('/', [FormSectionController::class, 'store']);
-        });
-        Route::prefix('form-sections')->group(function () {
-            Route::get('/{formSection}', [FormSectionController::class, 'show']);
-            Route::patch('/{formSection}', [FormSectionController::class, 'update']);
-            Route::patch('/{formSection}/re-order', [FormSectionController::class, 'sectionReorder']);
-            Route::delete('/{formSection}', [FormSectionController::class, 'destroy']);
-        });
-        // Form Field
-        Route::prefix('form-sections/{formSection}/form-fields')->group(function () {
-            Route::get('/', [FormFieldController::class, 'index']);
-            Route::post('/', [FormFieldController::class, 'store']);
-        });
+        Route::apiResource('form-templates.form-versions', FormVersionController::class)->shallow();
 
-        Route::prefix('form-fields')->group(function () {
-            Route::get('/{formField}', [FormFieldController::class, 'show']);
-            Route::patch('/{formField}', [FormFieldController::class, 'update']);
-            Route::patch('/{formField}/re-order', [FormFieldController::class, 'formFieldReorder']);
-            Route::delete('/{formField}', [FormFieldController::class, 'destroy']);
-        });
-        //    Form Field Options
-        Route::prefix('form-fields/{formField}/options')->group(function () {
-            Route::get('/', [FormFieldOptionController::class, 'index']);
-            Route::post('/', [FormFieldOptionController::class, 'store']);
-        });
+        Route::apiResource('form-versions.form-sections', FormSectionController::class)->shallow();
 
-        Route::prefix('form-field-options')->group(function () {
-            Route::get('/{formFieldOption}', [FormFieldOptionController::class, 'show']);
-            Route::patch('/{formFieldOption}', [FormFieldOptionController::class, 'update']);
-            Route::patch('/{formFieldOption}/re-order', [FormFieldOptionController::class, 'formFieldOptionsReorder']);
-            Route::delete('/{formFieldOption}', [FormFieldOptionController::class, 'destroy']);
-        });
+        Route::apiResource('form-sections.form-fields', FormFieldController::class)->shallow();
+
+        Route::apiResource('form-fields.options', FormFieldOptionController::class)
+            ->only(['index', 'store']);
+
+        Route::apiResource('form-field-options', FormFieldOptionController::class)
+            ->only(['show', 'update', 'destroy']);
+
+        Route::apiResource('applications.application-answers', ApplicationAnswerController::class)
+            ->only(['index', 'show']);
     });
 
-    // Application Invitation API
-    Route::prefix('job-hirings/{jobHiring}/invitations')->group(function () {
-        Route::post('/', [
-            ApplicationInvitationController::class,
-            'store',
-        ]);
+    Route::patch('form-sections/{form_section}/position', [FormSectionController::class, 'sectionReorder'])
+        ->name('form-sections.position.update');
+
+    Route::patch('form-fields/{form_field}/position', [FormFieldController::class, 'formFieldReorder'])
+        ->name('form-fields.position.update');
+
+    Route::patch('form-field-options/{form_field_option}/position', [FormFieldOptionController::class, 'formFieldOptionsReorder'])
+        ->name('form-field-options.position.update');
+
+    Route::prefix('application-invitations/{token}')->name('application-invitations.')->group(function () {
+        Route::get('form', [ApplicationFormController::class, 'index'])->name('form.show');
+        Route::post('submissions', [ApplicationSubmissionController::class, 'store'])->name('submissions.store');
     });
 
-    Route::prefix('application-invitations/{token}')->group(function () {
-        Route::get('/form', [ApplicationFormController::class, 'index']);
-        Route::post('/submit', [ApplicationSubmisionController::class, 'store']);
-    });
-
-    Route::prefix('application/{application}/application-answer')->group(function () {
-        Route::get('/', [ApplicationAnswerController::class, 'index']);
-        Route::get('/{applicationAnswer}', [ApplicationAnswerController::class, 'show']);
-    });
-
-    Route::prefix('application')->group(function () {
-        Route::get('/', [ApplicationController::class, 'index']);
-        Route::get('/{application}', [ApplicationController::class, 'show']);
-    });
+    Route::apiResource('applications', ApplicationController::class)->only(['index', 'show']);
 });
+
+//    ->withoutMiddleware(PreventRequestForgery::class);

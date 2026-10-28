@@ -47,6 +47,7 @@ class DepartmentController extends Controller
         return (new DepartmentResource($department));
     }
 
+
     /**
      * Update the specified resource in storage.
      */

@@ -5,20 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class JobHiring extends Model
 {
     use HasFactory, HasUuids;
 
     protected $fillable = [
-        'department_id',
-        'location_id',
-        'employment_type_id',
+        'department',
+        'location',
+        'employment_type',
         'title',
-        'slug',
         'description',
         'requirements',
         'status',
@@ -27,25 +26,14 @@ class JobHiring extends Model
     ];
 
     protected $casts = [
-        // 'is_active' => 'boolean',
         'published_at' => 'datetime',
-        // 'closed_at' => 'datetime',
-
     ];
 
-    public function location(): BelongsTo
+    protected static function booted(): void
     {
-        return $this->belongsTo(Location::class);
-    }
-
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class);
-    }
-
-    public function employmentType(): BelongsTo
-    {
-        return $this->belongsTo(EmploymentType::class);
+        static::creating(function (JobHiring $jobHiring): void {
+            $jobHiring->slug = (Str::slug($jobHiring->title) ?: 'job').'-'.$jobHiring->getKey();
+        });
     }
 
     public function formVersions(): BelongsToMany

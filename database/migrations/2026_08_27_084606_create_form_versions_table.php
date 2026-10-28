@@ -14,7 +14,6 @@ return new class extends Migration {
         Schema::create('form_versions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuidFor(FormTemplate::class)
-                ->unique()
                 ->constrained()
                 ->cascadeOnDelete();
             $table->unsignedInteger('version')->unique();

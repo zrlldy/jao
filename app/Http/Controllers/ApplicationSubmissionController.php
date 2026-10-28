@@ -8,11 +8,11 @@ use App\Models\Application;
 use App\Models\ApplicationAnswer;
 use App\Models\ApplicationInvitation;
 use DB;
+use Illuminate\Support\Str;
 use Throwable;
-
 use function Symfony\Component\Clock\now;
 
-class ApplicationSubmisionController extends Controller
+class ApplicationSubmissionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -31,13 +31,13 @@ class ApplicationSubmisionController extends Controller
      */
     public function store(CreateApplicationAnswerRequest $request, string $token)
     {
-
         $hashedToken = hash('sha256', $token);
-
-        $applicationInvitation = ApplicationInvitation::where('token', $hashedToken)->where('expired_at', '>=', now())->firstOrFail()
-            ->whereNull('used_at');
-
-        DB::transaction(function () use ($request, $applicationInvitation) {
+        DB::transaction(function () use ($request, $hashedToken) {
+            $applicationInvitation = ApplicationInvitation::query()
+                ->where('token', $hashedToken)->where('expired_at', '>=', now())
+                ->lockForUpdate()
+                ->whereNull('used_at')->firstOrFail();
+            
             $application = Application::create([
                 'application_invitation_id' => $applicationInvitation->id,
                 'job_hiring_id' => $applicationInvitation->jobHiring->id,
@@ -45,18 +45,17 @@ class ApplicationSubmisionController extends Controller
                 'status' => 'on_review',
                 'submitted_at' => now(),
             ]);
-
             $answers = [];
+            $answers = collect($answers)->map(fn($answer) => [
+                'id' => (string)Str::uuid(),
+                'application_id' => $application->id,
+                'form_field_id' => $answer['form_field_id'],
+                'value' => $answer['value'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ])->all();
 
-            foreach ($request->answers as $answer) {
-                $answers[] = [
-                    'application_id' => $application->id,
-                    'form_field_id' => $answer['form_field_id'],
-                    'value' => $answer['value'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
+
             ApplicationAnswer::insert($answers);
             $applicationInvitation->used_at = now();
             $applicationInvitation->save();

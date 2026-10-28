@@ -35,12 +35,13 @@ return [
         ],
     ],
     'api' => [
-        'header' => env('HEADER_API')
+        'header' => env('HEADER_API', 'X-API-Key'),
     ],
     'jao' => [
-        'api_key' => env("JAO_API_KEY"),
+        'api_key' => env('JAO_API_KEY'),
+        'hmac_secret' => env('JAO_HMAC_SECRET'),
         'allowed_origins' => array_values(array_filter(array_map('trim', explode(',', env('ALLOWED_ORIGINS', ''))))),
-        'url' => env("ALLOWED_URL_FRONTEND_1")
+        'url' => env('ALLOWED_URL_FRONTEND_1'),
     ],
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),

@@ -5,13 +5,10 @@ namespace Database\Seeders;
 //use App\Models\User;
 
 use App\Models\FormSection;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
@@ -42,7 +39,7 @@ class DatabaseSeeder extends Seeder
             EmploymentTypeSeed::class,
             DepartmentSeed::class,
             LocationSeed::class,
-            JobHiringSeed::class,            // needs Department, Location, EmploymentType
+            JobHiringSeed::class,
 
             FormVersionTreeSeeder::class,    // builds complete, standalone forms (template -> version -> sections -> fields -> options)
             // doesn't need JobHiring at all — replaces the 5 disconnected seeders below

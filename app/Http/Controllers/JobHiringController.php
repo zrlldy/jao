@@ -15,8 +15,8 @@ class JobHiringController extends Controller
      */
     public function index(Request $request)
     {
-        $jobHiring = JobHiring::with(['department:id,name', 'employmentType:id,name', 'location:id,name'])->select(['id', 'department_id', 'employment_type_id', 'location_id', 'title', 'slug', 'description', 'requirements', 'status', 'published_at', 'closed_at'])
-            ->when($request->filled('department_id'), fn($query) => $query->where('department_id', $request->department_id))
+        $jobHiring = JobHiring::query()
+            ->when($request->filled('department'), fn ($query) => $query->where('department', $request->input('department')))
             ->paginate(10);
 
         return JobHiringResource::collection($jobHiring);
@@ -38,8 +38,6 @@ class JobHiringController extends Controller
      */
     public function show(JobHiring $jobHiring)
     {
-        $jobHiring->load('department:id,name', 'employmentType:id,name', 'location:id,name')->select('id', 'department_id', 'employment_type_id', 'location_id', 'title', 'slug', 'description', 'requirements', 'status', 'published_at', 'closed_at');
-
         return new JobHiringResource($jobHiring);
     }
 
@@ -49,6 +47,7 @@ class JobHiringController extends Controller
     public function update(UpateJobHiringRequest $request, JobHiring $jobHiring)
     {
         $jobHiring->update($request->validated());
+
         return new JobHiringResource($jobHiring);
     }
 
@@ -58,6 +57,7 @@ class JobHiringController extends Controller
     public function destroy(JobHiring $jobHiring)
     {
         $jobHiring->delete();
+
         return response()->noContent();
     }
 
