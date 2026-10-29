@@ -31,6 +31,27 @@ test('accepts a valid signed request with a timestamp', function () {
         ->assertExactJson(['authorized' => true]);
 });
 
+test('a private production route rejects an API key without HMAC headers', function () {
+    config()->set('services.jao.api_key', 'test-server-key');
+
+    $this->getJson(route('departments.index'), ['X-API-Key' => 'test-server-key'])
+        ->assertUnauthorized()
+        ->assertExactJson(['message' => 'Unauthorized.']);
+});
+
+test('a signed private production request reaches validation', function () {
+    config()->set('services.jao.api_key', 'test-server-key');
+
+    $headers = array_merge(
+        ['X-API-Key' => 'test-server-key'],
+        signedJaoHeaders(method: 'POST', uri: '/api/job-hirings', body: '[]'),
+    );
+
+    $this->postJson(route('job-hirings.store'), [], $headers)
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('title');
+});
+
 test('returns 401 for missing or malformed signature headers', function (array $override) {
     $headers = array_replace(signedJaoHeaders(), $override);
 

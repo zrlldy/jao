@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -34,6 +36,14 @@ class JobHiring extends Model
         static::creating(function (JobHiring $jobHiring): void {
             $jobHiring->slug = (Str::slug($jobHiring->title) ?: 'job').'-'.$jobHiring->getKey();
         });
+    }
+
+    #[Scope]
+    protected function publiclyVisible(Builder $query): void
+    {
+        $query->where('status', 'published')
+            ->where(fn (Builder $query) => $query->whereNull('published_at')->orWhereDate('published_at', '<=', today()))
+            ->where(fn (Builder $query) => $query->whereNull('closed_at')->orWhereDate('closed_at', '>=', today()));
     }
 
     public function formVersions(): BelongsToMany

@@ -23,7 +23,7 @@ class ApplicationInvitationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'min:5']
+            'email' => ['required', 'email', 'max:255'],
         ];
     }
 }

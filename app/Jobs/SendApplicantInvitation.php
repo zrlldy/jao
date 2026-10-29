@@ -4,10 +4,11 @@ namespace App\Jobs;
 
 use App\Models\ApplicationInvitation;
 use App\Notifications\ApplicationInviteNotification;
+use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class SendApplicantInvitation implements ShouldQueue
+class SendApplicantInvitation implements ShouldBeEncrypted, ShouldQueue
 {
     use Queueable;
 

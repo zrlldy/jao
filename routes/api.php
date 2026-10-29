@@ -17,7 +17,22 @@ use App\Http\Controllers\JobHiringController;
 use App\Http\Controllers\LocationController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['jao.key', 'web'])->group(function () {
+Route::prefix('public/job-hirings')->name('public.job-hirings.')->middleware('throttle:public-job-hirings')->group(function () {
+    Route::get('/', [JobHiringController::class, 'publicIndex'])->name('index');
+    Route::get('{job_hiring}', [JobHiringController::class, 'publicShow'])->name('show');
+});
+
+Route::prefix('application-invitations/{token}')->name('application-invitations.')->group(function () {
+    Route::get('form', [ApplicationFormController::class, 'index'])
+        ->middleware('throttle:public-application-form')
+        ->name('form.show');
+
+    Route::post('submissions', [ApplicationSubmissionController::class, 'store'])
+        ->middleware('throttle:public-application-submission')
+        ->name('submissions.store');
+});
+
+Route::middleware(['jao.key', 'jao.hmac', 'web'])->group(function () {
     Route::apiResources([
         'departments' => DepartmentController::class,
         'employment-types' => EmploymentTypeController::class,
@@ -29,8 +44,9 @@ Route::middleware(['jao.key', 'web'])->group(function () {
     Route::apiResource('job-hirings.form-versions', JobFormVersionAssignmentController::class)
         ->only(['index', 'store', 'destroy']);
 
-    Route::apiResource('job-hirings.invitations', ApplicationInvitationController::class)
-        ->only(['store']);
+    Route::post('job-hirings/{job_hiring}/invitations', [ApplicationInvitationController::class, 'store'])
+        ->middleware('throttle:private-invitation-create')
+        ->name('job-hirings.invitations.store');
 
     Route::scopeBindings()->group(function () {
         Route::apiResource('form-templates.form-versions', FormVersionController::class)->shallow();
@@ -58,12 +74,5 @@ Route::middleware(['jao.key', 'web'])->group(function () {
     Route::patch('form-field-options/{form_field_option}/position', [FormFieldOptionController::class, 'formFieldOptionsReorder'])
         ->name('form-field-options.position.update');
 
-    Route::prefix('application-invitations/{token}')->name('application-invitations.')->group(function () {
-        Route::get('form', [ApplicationFormController::class, 'index'])->name('form.show');
-        Route::post('submissions', [ApplicationSubmissionController::class, 'store'])->name('submissions.store');
-    });
-
     Route::apiResource('applications', ApplicationController::class)->only(['index', 'show']);
 });
-
-//    ->withoutMiddleware(PreventRequestForgery::class);

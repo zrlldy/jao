@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Models\FormField;
-use App\Models\FormVersion;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class CreateApplicationAnswerRequest extends FormRequest
 {
@@ -26,18 +23,11 @@ class CreateApplicationAnswerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'form_version_id' => [
-                'required',
-                'uuid',
-                Rule::exists(FormVersion::class, 'id')
-            ],
-            'answers' => ['array', 'nullable',],
-            'answers.*.form_field_id' => [
-                'nullable',
-                'uuid',
-                Rule::exists(FormField::class, 'id')
-            ],
-            'answers.*.value' => ['nullable'],
+            'form_version_id' => ['required', 'uuid'],
+            'answers' => ['present', 'array', 'max:100'],
+            'answers.*' => ['required', 'array:form_field_id,value'],
+            'answers.*.form_field_id' => ['required', 'uuid', 'distinct:strict'],
+            'answers.*.value' => ['present', 'nullable', 'string', 'max:10000'],
         ];
     }
 }

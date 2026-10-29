@@ -14,16 +14,12 @@ class ApplicationInvitation extends Model
 
     protected $fillable = [
         'job_hiring_id',
+        'form_version_id',
         'email',
         'token',
         'expired_at',
         'used_at',
     ];
-
-    public function application(): BelongsTo
-    {
-        return $this->belongsTo(Application::class);
-    }
 
     public function jobHiring(): BelongsTo
     {

@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Middleware\VerifyHmacSignature;
 use App\Models\FormSection;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+    $this->withoutMiddleware(VerifyHmacSignature::class);
     config([
         'services.jao.api_key' => 'test-jao-key',
         'services.api.header' => 'X-JAO-Key',

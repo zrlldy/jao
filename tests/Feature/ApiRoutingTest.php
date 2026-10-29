@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\VerifyHmacSignature;
 use App\Models\Department;
 use App\Models\FormField;
 use App\Models\FormFieldOption;
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+    $this->withoutMiddleware(VerifyHmacSignature::class);
     config()->set([
         'services.api.header' => 'X-API-Key',
         'services.jao.api_key' => 'routing-test-key',
@@ -45,6 +47,8 @@ test('generates named URLs for API resources and custom endpoints', function (st
     'employment types' => ['employment-types.show', ['type-id'], '/api/employment-types/type-id'],
     'locations' => ['locations.index', [], '/api/locations'],
     'job hirings' => ['job-hirings.show', ['job-id'], '/api/job-hirings/job-id'],
+    'public job list' => ['public.job-hirings.index', [], '/api/public/job-hirings'],
+    'public job detail' => ['public.job-hirings.show', ['job-id'], '/api/public/job-hirings/job-id'],
     'form templates' => ['form-templates.index', [], '/api/form-templates'],
     'nested form versions' => ['form-templates.form-versions.store', ['template-id'], '/api/form-templates/template-id/form-versions'],
     'shallow form versions' => ['form-versions.show', ['version-id'], '/api/form-versions/version-id'],

@@ -7,9 +7,25 @@ use App\Http\Requests\UpateJobHiringRequest;
 use App\Http\Resources\JobHiringResource;
 use App\Models\JobHiring;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class JobHiringController extends Controller
 {
+    public function publicIndex(Request $request): AnonymousResourceCollection
+    {
+        $jobHiring = JobHiring::query()->publiclyVisible()
+            ->when($request->filled('department'), fn ($query) => $query->where('department', $request->input('department')))
+            ->paginate(10);
+
+        return JobHiringResource::collection($jobHiring);
+    }
+
+    public function publicShow(string $jobHiring): JobHiringResource
+    {
+        return new JobHiringResource(JobHiring::query()->publiclyVisible()->findOrFail($jobHiring));
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -56,7 +72,13 @@ class JobHiringController extends Controller
      */
     public function destroy(JobHiring $jobHiring)
     {
-        $jobHiring->delete();
+        DB::transaction(function () use ($jobHiring): void {
+            $jobHiring = JobHiring::query()->lockForUpdate()->findOrFail($jobHiring->getKey());
+
+            abort_if($jobHiring->applications()->exists(), 409, 'Cannot delete a job hiring with applications.');
+
+            $jobHiring->delete();
+        });
 
         return response()->noContent();
     }

@@ -7,6 +7,8 @@ use Illuminate\Validation\Rule;
 
 class CreateJobHiringRequest extends FormRequest
 {
+    public const STATUSES = ['draft', 'published', 'closed'];
+
     public function authorize(): bool
     {
         return true;
@@ -57,11 +59,7 @@ class CreateJobHiringRequest extends FormRequest
             'status' => [
                 'required',
                 'string',
-                Rule::in([
-                    'draft',
-                    'published',
-                    'closed',
-                ]),
+                Rule::in(self::STATUSES),
             ],
 
             'published_at' => [

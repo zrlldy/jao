@@ -30,7 +30,7 @@ class UpateJobHiringRequest extends FormRequest
             'title' => ['string', 'sometimes', 'max:100', 'min:3'],
             'description' => ['string', 'sometimes', 'max:100', 'min:10'],
             'requirements' => ['string', 'sometimes', 'max:100', 'min:10'],
-            'status' => ['string', 'sometimes', 'min:3', 'max:100'],
+            'status' => ['string', 'sometimes', Rule::in(CreateJobHiringRequest::STATUSES)],
             'published_at' => ['date', 'sometimes', 'after_or_equal:created_at'],
             'closed_at' => ['date', 'sometimes', 'after:published_at'],
         ];
