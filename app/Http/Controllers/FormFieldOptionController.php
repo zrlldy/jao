@@ -8,7 +8,10 @@ use App\Http\Requests\UpdateFormFieldOptionRequest;
 use App\Http\Resources\FormFieldOptionResource;
 use App\Models\FormField;
 use App\Models\FormFieldOption;
+use App\Models\FormVersion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class FormFieldOptionController extends Controller
 {
@@ -27,10 +30,19 @@ class FormFieldOptionController extends Controller
 
     public function store(CreateFormFieldOptionRequest $request, FormField $formField)
     {
-        $formFieldOption = $formField->formFieldOptions()->create([
-            ...$request->validated(),
-            'sort_order' => ($formField->formFieldOptions()->max('sort_order') ?? 0) + 1,
-        ]);
+        $formFieldOption = DB::transaction(function () use ($request, $formField): FormFieldOption {
+            $formVersion = FormVersion::query()->lockForUpdate()->findOrFail($formField->formSection->form_version_id);
+            abort_unless($formVersion->status === 'draft', 409, 'Only draft forms can be edited.');
+            abort_if($formVersion->applications()->exists(), 409, 'Forms with applications cannot be edited.');
+
+            $formField = FormField::query()->findOrFail($formField->getKey());
+            abort_unless(in_array($formField->type, ['select', 'radio', 'checkbox'], true), 409, 'This question type has no options.');
+
+            return $formField->formFieldOptions()->create([
+                ...$request->validated(),
+                'sort_order' => ($formField->formFieldOptions()->max('sort_order') ?? 0) + 1,
+            ]);
+        });
 
         $formFieldOption->load('formField');
 
@@ -46,14 +58,21 @@ class FormFieldOptionController extends Controller
 
     public function formFieldOptionsReorder(Request $request, FormFieldOption $formFieldOption, ReorderFormFieldOption $reorderFormFieldOption)
     {
-        $request->validate([
-            'sort_order' => 'required|integer',
-        ]);
+        $validated = $request->validate(['sort_order' => ['required', 'integer', 'min:1']]);
 
-        $oldSortOrder = $formFieldOption->sort_order;
-        $newSortOrder = $request->input('sort_order');
+        DB::transaction(function () use ($formFieldOption, $validated, $reorderFormFieldOption): void {
+            $formVersion = FormVersion::query()->lockForUpdate()->findOrFail($formFieldOption->formField->formSection->form_version_id);
+            abort_unless($formVersion->status === 'draft', 409, 'Only draft forms can be edited.');
+            abort_if($formVersion->applications()->exists(), 409, 'Forms with applications cannot be edited.');
 
-        $reorderFormFieldOption->execute($formFieldOption, $oldSortOrder, $newSortOrder);
+            $formFieldOption = FormFieldOption::query()->findOrFail($formFieldOption->getKey());
+            if ($validated['sort_order'] > $formFieldOption->formField->formFieldOptions()->count()) {
+                throw ValidationException::withMessages(['sort_order' => 'The position is outside this question.']);
+            }
+
+            $reorderFormFieldOption->execute($formFieldOption, $formFieldOption->sort_order, (int) $validated['sort_order']);
+        });
+
         return response()->json([
             'message' => 'Form Field option moved successfully',
         ]);
@@ -61,7 +80,13 @@ class FormFieldOptionController extends Controller
 
     public function update(UpdateFormFieldOptionRequest $request, FormFieldOption $formFieldOption)
     {
-        $formFieldOption->update($request->validated());
+        DB::transaction(function () use ($request, $formFieldOption): void {
+            $formVersion = FormVersion::query()->lockForUpdate()->findOrFail($formFieldOption->formField->formSection->form_version_id);
+            abort_unless($formVersion->status === 'draft', 409, 'Only draft forms can be edited.');
+            abort_if($formVersion->applications()->exists(), 409, 'Forms with applications cannot be edited.');
+
+            FormFieldOption::query()->findOrFail($formFieldOption->getKey())->update($request->validated());
+        });
 
         return response()->json([
             'message' => 'Form Field Option updated successfully',
@@ -70,7 +95,13 @@ class FormFieldOptionController extends Controller
 
     public function destroy(FormFieldOption $formFieldOption)
     {
-        $formFieldOption->delete();
+        DB::transaction(function () use ($formFieldOption): void {
+            $formVersion = FormVersion::query()->lockForUpdate()->findOrFail($formFieldOption->formField->formSection->form_version_id);
+            abort_unless($formVersion->status === 'draft', 409, 'Only draft forms can be edited.');
+            abort_if($formVersion->applications()->exists(), 409, 'Forms with applications cannot be edited.');
+
+            FormFieldOption::query()->findOrFail($formFieldOption->getKey())->delete();
+        });
 
         return response()->noContent();
     }

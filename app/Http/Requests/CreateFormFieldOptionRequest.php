@@ -23,8 +23,8 @@ class CreateFormFieldOptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'value' => 'required|string|min:3|max:255',
-            'label' => 'required|string|min:2|max:255',
+            'value' => 'required|string|min:1|max:255',
+            'label' => 'required|string|min:1|max:255',
 
         ];
     }

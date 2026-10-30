@@ -14,6 +14,7 @@ class JobHiringSeed extends Seeder
     {
         JobHiring::factory()
             ->count(10)
+            ->state(['status' => 'published'])
             ->create();
     }
 }

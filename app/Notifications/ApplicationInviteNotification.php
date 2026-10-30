@@ -31,14 +31,15 @@ class ApplicationInviteNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = config('services.jao.url')
+        $url = 'https://'.rtrim(config('services.jao.url'), '/')
             .'/application/form/'
             .$this->token;
 
         return (new MailMessage)
             ->subject('Job Application Invitation')
-            ->line('You have been invited to submit a job application.')
-            ->action('Open Application Form', $url)
-            ->line('This invitation is valid through '.$this->invitation->expired_at.'.');
+            ->view(
+                ['mail.application-invitation', 'mail.application-invitation-text'],
+                ['applicationUrl' => $url, 'expiresOn' => $this->invitation->expired_at]
+            );
     }
 }

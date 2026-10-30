@@ -25,9 +25,10 @@ class CreateApplicationAnswerRequest extends FormRequest
         return [
             'form_version_id' => ['required', 'uuid'],
             'answers' => ['present', 'array', 'max:100'],
-            'answers.*' => ['required', 'array:form_field_id,value'],
+            'answers.*' => ['required', 'array:form_field_id,value,file'],
             'answers.*.form_field_id' => ['required', 'uuid', 'distinct:strict'],
-            'answers.*.value' => ['present', 'nullable', 'string', 'max:10000'],
+            'answers.*.value' => ['sometimes', 'nullable', 'string', 'max:10000'],
+            'answers.*.file' => ['sometimes', 'file', 'mimetypes:application/pdf,image/jpeg,image/png', 'max:10240'],
         ];
     }
 }

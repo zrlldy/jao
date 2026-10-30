@@ -25,9 +25,9 @@ class CreateFormFieldRequest extends FormRequest
         return [
             'key' => ['required', 'string', 'min:3', 'max:255'],
             'label' => ['required', 'string', 'min:2', 'max:255'],
-            'type' => ['required', 'string', 'min:3', 'max:50'],
+            'type' => ['required', 'in:text,textarea,select,radio,checkbox,date,file'],
             'placeholder' => ['nullable', 'string', 'max:255', 'min:3'],
-            'default_value' => ['nullable', 'min:0', 'max:255'],
+            'default_value' => ['nullable', 'string', 'max:255'],
             'is_required' => ['sometimes', 'boolean'],
             'settings' => ['nullable', 'array'],
             'validation_rules' => ['nullable', 'array'],

@@ -1,0 +1,5 @@
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;margin:0 0 28px;border-top:2px solid #800000;">
+    <tr><td style="padding:15px 0;border-bottom:1px solid #292F36;color:#292F36;font-family:Poppins,Arial,sans-serif;font-size:14px;line-height:1.5;"><strong style="display:block;color:#800000;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;">Date</strong>{{ $interviewDate }}</td></tr>
+    <tr><td style="padding:15px 0;border-bottom:1px solid #292F36;color:#292F36;font-family:Poppins,Arial,sans-serif;font-size:14px;line-height:1.5;"><strong style="display:block;color:#800000;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;">Time</strong>{{ $interviewTime }}</td></tr>
+    <tr><td style="padding:15px 0;border-bottom:1px solid #292F36;color:#292F36;font-family:Poppins,Arial,sans-serif;font-size:14px;line-height:1.5;"><strong style="display:block;color:#800000;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;">Location</strong>{{ $interviewLocation }}</td></tr>
+</table>

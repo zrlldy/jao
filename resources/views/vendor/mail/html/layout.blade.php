@@ -7,20 +7,18 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="color-scheme" content="light">
 <meta name="supported-color-schemes" content="light">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 @media only screen and (max-width: 600px) {
-.inner-body {
+.inner-body, .header-inner {
 width: 100% !important;
 }
-
-.footer {
-width: 100% !important;
+.hero-cell, .content-cell {
+padding-left: 24px !important;
+padding-right: 24px !important;
 }
-}
-
-@media only screen and (max-width: 500px) {
-.button {
-width: 100% !important;
+.mail-title {
+font-size: 28px !important;
 }
 }
 </style>
@@ -34,16 +32,14 @@ width: 100% !important;
 <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
 {!! $header ?? '' !!}
 
-<!-- Email Body -->
 <tr>
-<td class="body" width="100%" cellpadding="0" cellspacing="0" style="border: hidden !important;">
-<table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+<td class="body" width="100%">
+<table class="inner-body" align="center" width="520" cellpadding="0" cellspacing="0" role="presentation">
 <tr>
-<td class="banner">
-{{ $title ?? config('app.name') }}
+<td class="hero-cell" align="center">
+<h1 class="mail-title">{{ $title ?? config('app.name') }}</h1>
 </td>
 </tr>
-<!-- Body content -->
 <tr>
 <td class="content-cell">
 {!! Illuminate\Mail\Markdown::parse($slot) !!}
@@ -51,11 +47,10 @@ width: 100% !important;
 {!! $subcopy ?? '' !!}
 </td>
 </tr>
+{!! $footer ?? '' !!}
 </table>
 </td>
 </tr>
-
-{!! $footer ?? '' !!}
 </table>
 </td>
 </tr>

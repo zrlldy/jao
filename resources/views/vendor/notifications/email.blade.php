@@ -1,13 +1,7 @@
-<x-mail::message>
+<x-mail::message :title="$subject" :mail-message="$message ?? null">
 {{-- Greeting --}}
 @if (! empty($greeting))
-# {{ $greeting }}
-@else
-@if ($level === 'error')
-# @lang('Whoops!')
-@else
-# @lang('Hello!')
-@endif
+{{ $greeting }}
 @endif
 
 {{-- Intro Lines --}}
@@ -38,19 +32,14 @@ $color = match ($level) {
 {{-- Salutation --}}
 @if (! empty($salutation))
 {{ $salutation }}
-@else
-@lang('Regards,')<br>
-{{ config('app.name') }}
 @endif
 
 {{-- Subcopy --}}
 @isset($actionText)
 <x-slot:subcopy>
-If you did not request a password reset, please ignore this email.
-For assistance, please contact our support team at
-<a href="mailto:support.eastequatorexpress@gmail.com">
-support.eastequatorexpress@gmail.com
-</a>.
+If the button does not work, copy and paste the URL below into your browser:
+
+{{ $actionUrl }}
 </x-slot:subcopy>
 @endisset
 </x-mail::message>

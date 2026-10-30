@@ -23,8 +23,8 @@ class UpdateFormVersionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['sometimes', 'string', 'min:3', 'max:100'],
-            'published_at' => ['date', 'sometimes', 'after_or_equal:created_at']
+            'status' => ['sometimes', 'in:draft,published,archived'],
+            'published_at' => ['prohibited'],
         ];
     }
 }

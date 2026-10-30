@@ -25,9 +25,9 @@ class UpdateFormFieldRequest extends FormRequest
         return [
             'key' => ['sometimes', 'string', 'max:255', 'min:3'],
             'label' => ['sometimes', 'string', 'max:255', 'min:2'],
-            'type' => ['sometimes', 'string', 'max:100'],
+            'type' => ['sometimes', 'in:text,textarea,select,radio,checkbox,date,file'],
             'placeholder' => ['nullable', 'string', 'sometimes', 'min:3', 'max:100'],
-            'default_value' => ['nullable', 'sometimes', 'min:3', 'max:100'],
+            'default_value' => ['nullable', 'sometimes', 'string', 'max:255'],
             'is_required' => ['sometimes', 'boolean'],
             'settings' => ['sometimes', 'array'],
             'validation_rules' => ['sometimes', 'array'],

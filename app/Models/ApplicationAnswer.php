@@ -14,6 +14,14 @@ class ApplicationAnswer extends Model
         'application_id',
         'form_field_id',
         'value',
+        'file_path',
+        'file_name',
+        'file_mime',
+        'file_size',
+    ];
+
+    protected $casts = [
+        'file_size' => 'integer',
     ];
 
     public function application(): BelongsTo

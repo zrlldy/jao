@@ -6,8 +6,8 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
 
-test('database seeding creates job hirings with generated slugs', function () {
+test('database seeding creates publicly visible job hirings', function () {
     $this->seed(DatabaseSeeder::class);
 
-    expect(JobHiring::count())->toBeGreaterThan(0);
+    expect(JobHiring::publiclyVisible()->count())->toBeGreaterThan(0);
 });

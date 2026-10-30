@@ -12,7 +12,7 @@ class CreateFormVersionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-       return true;
+        return true;
     }
 
     /**
@@ -23,7 +23,7 @@ class CreateFormVersionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', 'string', 'min:3', 'max:100'],
+            'status' => ['required', 'in:draft'],
         ];
     }
 }

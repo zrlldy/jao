@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateFormVersionRequest;
 use App\Http\Requests\UpdateFormVersionRequest;
 use App\Http\Resources\FormVersionResource;
+use App\Models\ApplicationAnswer;
+use App\Models\ApplicationInvitation;
 use App\Models\FormTemplate;
 use App\Models\FormVersion;
 use Illuminate\Support\Facades\DB;
@@ -47,7 +49,7 @@ class FormVersionController extends Controller
             return $lockedTemplate->formVersions()->create([
                 ...$request->validated(),
                 'version' => ((int) ($latestVersion ?? 0)) + 1,
-                'published_at' => $request->validated('status') === 'published' ? today() : null,
+                'published_at' => null,
             ]);
         }, 3);
 
@@ -63,7 +65,26 @@ class FormVersionController extends Controller
         UpdateFormVersionRequest $request,
         FormVersion $formVersion
     ) {
-        $formVersion->update($request->validated());
+        $formVersion = DB::transaction(function () use ($request, $formVersion): FormVersion {
+            $formVersion = FormVersion::query()->lockForUpdate()->findOrFail($formVersion->getKey());
+            $data = $request->validated();
+
+            if (isset($data['status']) && $data['status'] !== $formVersion->status) {
+                abort_if($formVersion->status !== 'draft' && $data['status'] !== 'archived', 409, 'A published or archived form cannot be reopened.');
+
+                if ($data['status'] === 'published') {
+                    abort_unless($formVersion->formSections()->whereHas('formFields')->exists(), 409, 'A form needs a question before publication.');
+                    abort_if($formVersion->formSections()->whereHas('formFields', fn ($query) => $query
+                        ->whereIn('type', ['select', 'radio', 'checkbox'])
+                        ->doesntHave('formFieldOptions'))->exists(), 409, 'Choice questions need options before publication.');
+                    $data['published_at'] = today();
+                }
+            }
+
+            $formVersion->update($data);
+
+            return $formVersion;
+        });
 
         return new FormVersionResource($formVersion);
     }
@@ -74,6 +95,11 @@ class FormVersionController extends Controller
             $formVersion = FormVersion::query()->lockForUpdate()->findOrFail($formVersion->getKey());
 
             abort_if($formVersion->applications()->exists(), 409, 'Cannot delete a form version with applications.');
+            abort_if(ApplicationAnswer::query()->whereHas('formField.formSection', fn ($query) => $query
+                ->where('form_version_id', $formVersion->id))->exists(), 409, 'Cannot delete a form version with saved answers.');
+            abort_if($formVersion->jobHirings()->exists()
+                || ApplicationInvitation::query()->where('form_version_id', $formVersion->id)->exists(),
+                409, 'Cannot delete an assigned or invited form version.');
 
             $formVersion->delete();
         });

@@ -1,14 +1,11 @@
-@props(['title' => null])
+@props(['title' => null, 'mailMessage' => null])
 <x-mail::layout :title="$title">
-{{-- Header (logo) --}}
 <x-slot:header>
-<x-mail::header :url="config('app.url')" />
+<x-mail::header :mail-message="$mailMessage" />
 </x-slot:header>
 
-{{-- Body --}}
 {{ $slot }}
 
-{{-- Subcopy --}}
 @isset($subcopy)
 <x-slot:subcopy>
 <x-mail::subcopy>
@@ -17,7 +14,6 @@
 </x-slot:subcopy>
 @endisset
 
-{{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer />
 </x-slot:footer>

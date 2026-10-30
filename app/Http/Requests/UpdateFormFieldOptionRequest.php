@@ -23,8 +23,8 @@ class UpdateFormFieldOptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'value' => ["string", "max:255", "min:3"],
-            'label' => ["required", "string", "max:255"],
+            'value' => ['sometimes', 'string', 'min:1', 'max:255'],
+            'label' => ['sometimes', 'string', 'min:1', 'max:255'],
         ];
     }
 }

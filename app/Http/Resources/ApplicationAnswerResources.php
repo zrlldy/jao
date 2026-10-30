@@ -24,6 +24,11 @@ class ApplicationAnswerResources extends JsonResource
             }),
             'form_field' => FormFieldResource::make($this->whenLoaded('formField')),
             'value' => $this->value,
+            'file' => $this->file_path === null ? null : [
+                'name' => $this->file_name,
+                'mime_type' => $this->file_mime,
+                'size' => $this->file_size,
+            ],
         ];
     }
 }

@@ -6,7 +6,7 @@ use App\Http\Requests\CreateFormTemplateRequest;
 use App\Http\Requests\UpdateFormTemplateRequest;
 use App\Http\Resources\FormTemplateResource;
 use App\Models\FormTemplate;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FormTemplateController extends Controller
 {
@@ -15,7 +15,8 @@ class FormTemplateController extends Controller
      */
     public function index()
     {
-        $formTemplate = FormTemplate::select('id', 'name', 'description', 'is_active',)->orderBy('name', 'asc')->paginate(10);
+        $formTemplate = FormTemplate::select('id', 'name', 'description', 'is_active')->orderBy('name', 'asc')->paginate(10);
+
         return FormTemplateResource::collection($formTemplate);
     }
 
@@ -26,6 +27,7 @@ class FormTemplateController extends Controller
     {
 
         $formTemplate = FormTemplate::create($request->validated());
+
         return new FormTemplateResource($formTemplate);
     }
 
@@ -43,6 +45,7 @@ class FormTemplateController extends Controller
     public function update(UpdateFormTemplateRequest $request, FormTemplate $formTemplate)
     {
         $formTemplate->update($request->validated());
+
         return new FormTemplateResource($formTemplate);
     }
 
@@ -51,7 +54,14 @@ class FormTemplateController extends Controller
      */
     public function destroy(FormTemplate $formTemplate)
     {
-        $formTemplate->deleteOrFail();
+        DB::transaction(function () use ($formTemplate): void {
+            $formTemplate = FormTemplate::query()->lockForUpdate()->findOrFail($formTemplate->getKey());
+
+            abort_if($formTemplate->formVersions()->exists(), 409, 'Delete the form versions before deleting the template.');
+
+            $formTemplate->deleteOrFail();
+        });
+
         return response()->noContent();
     }
 }

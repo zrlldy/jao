@@ -15,8 +15,9 @@ class JobHiringController extends Controller
     public function publicIndex(Request $request): AnonymousResourceCollection
     {
         $jobHiring = JobHiring::query()->publiclyVisible()
-            ->when($request->filled('department'), fn ($query) => $query->where('department', $request->input('department')))
+            ->when($request->filled('department'), fn($query) => $query->where('department', $request->input('department')))
             ->paginate(10);
+
 
         return JobHiringResource::collection($jobHiring);
     }
@@ -32,7 +33,7 @@ class JobHiringController extends Controller
     public function index(Request $request)
     {
         $jobHiring = JobHiring::query()
-            ->when($request->filled('department'), fn ($query) => $query->where('department', $request->input('department')))
+            ->when($request->filled('department'), fn($query) => $query->where('department', $request->input('department')))
             ->paginate(10);
 
         return JobHiringResource::collection($jobHiring);

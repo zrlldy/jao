@@ -10,6 +10,8 @@ use App\Models\FormVersion;
 use App\Models\JobHiring;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -50,6 +52,146 @@ test('an applicant submits answers without an internal API key and consumes the 
     $this->postJson(route('application-invitations.submissions.store', $this->token), $payload)
         ->assertNotFound();
     $this->assertDatabaseCount('applications', 1);
+});
+
+test('a file question stores a private PDF with metadata', function () {
+    Storage::fake('local');
+    $fileField = FormField::factory()->for($this->field->formSection)
+        ->create(['type' => 'file', 'is_required' => true]);
+
+    $this->post(route('application-invitations.submissions.store', $this->token), [
+        'form_version_id' => $this->formVersion->id,
+        'answers' => [
+            ['form_field_id' => $this->field->id, 'value' => 'Engineer'],
+            ['form_field_id' => $fileField->id, 'file' => UploadedFile::fake()->create('resume.pdf', 100, 'application/pdf')],
+        ],
+    ], ['Accept' => 'application/json'])->assertOk();
+
+    $answer = ApplicationAnswer::query()->where('form_field_id', $fileField->id)->sole();
+    expect($answer->value)->toBeNull()
+        ->and($answer->file_name)->toBe('resume.pdf')
+        ->and($answer->file_mime)->toBe('application/pdf')
+        ->and($answer->file_size)->toBeGreaterThan(0)
+        ->and($answer->file_path)->toStartWith('application-answers/');
+    Storage::disk('local')->assertExists($answer->file_path);
+
+    $migration = require base_path('database/migrations/2026_10_30_000002_add_file_metadata_to_application_answers.php');
+    expect(fn () => $migration->down())->toThrow(RuntimeException::class);
+});
+
+test('a file question accepts a supported image and stores a safe extension', function (string $name, string $mime, string $extension) {
+    Storage::fake('local');
+    $fileField = FormField::factory()->for($this->field->formSection)
+        ->create(['type' => 'file', 'is_required' => true]);
+
+    $this->post(route('application-invitations.submissions.store', $this->token), [
+        'form_version_id' => $this->formVersion->id,
+        'answers' => [
+            ['form_field_id' => $this->field->id, 'value' => 'Engineer'],
+            ['form_field_id' => $fileField->id, 'file' => UploadedFile::fake()->create($name, 100, $mime)],
+        ],
+    ], ['Accept' => 'application/json'])->assertOk();
+
+    $answer = ApplicationAnswer::query()->where('form_field_id', $fileField->id)->sole();
+    expect($answer->file_path)->toEndWith('.'.$extension)
+        ->and($answer->file_name)->toEndWith('.'.$extension);
+    Storage::disk('local')->assertExists($answer->file_path);
+})->with([
+    ['portrait.jpeg', 'image/jpeg', 'jpg'],
+    ['portfolio.png', 'image/png', 'png'],
+]);
+
+test('a required file question cannot be skipped', function () {
+    $fileField = FormField::factory()->for($this->field->formSection)
+        ->create(['type' => 'file', 'is_required' => true]);
+
+    $this->postJson(route('application-invitations.submissions.store', $this->token), [
+        'form_version_id' => $this->formVersion->id,
+        'answers' => [['form_field_id' => $this->field->id, 'value' => 'Engineer']],
+    ])->assertUnprocessable()->assertJsonValidationErrors('answers');
+
+    $this->assertDatabaseCount('applications', 0);
+});
+
+test('a file question rejects a non-document upload without consuming the invitation', function () {
+    Storage::fake('local');
+    $fileField = FormField::factory()->for($this->field->formSection)
+        ->create(['type' => 'file', 'is_required' => true]);
+    $temporaryFile = tmpfile();
+    fwrite($temporaryFile, '<?php echo "unsafe";');
+    $disguisedUpload = new UploadedFile(stream_get_meta_data($temporaryFile)['uri'], 'resume.pdf', 'application/pdf', null, true);
+
+    try {
+        $this->post(route('application-invitations.submissions.store', $this->token), [
+            'form_version_id' => $this->formVersion->id,
+            'answers' => [
+                ['form_field_id' => $this->field->id, 'value' => 'Engineer'],
+                ['form_field_id' => $fileField->id, 'file' => $disguisedUpload],
+            ],
+        ], ['Accept' => 'application/json'])
+            ->assertUnprocessable()->assertJsonValidationErrors('answers.1.file');
+    } finally {
+        fclose($temporaryFile);
+    }
+
+    $this->assertDatabaseCount('applications', 0);
+    expect($this->invitation->fresh()->used_at)->toBeNull();
+});
+
+test('submission rejects a file on a text question and a text value on a file question', function () {
+    Storage::fake('local');
+    $fileField = FormField::factory()->for($this->field->formSection)
+        ->create(['type' => 'file', 'is_required' => false]);
+
+    $this->post(route('application-invitations.submissions.store', $this->token), [
+        'form_version_id' => $this->formVersion->id,
+        'answers' => [
+            ['form_field_id' => $this->field->id, 'file' => UploadedFile::fake()->create('resume.pdf', 10, 'application/pdf')],
+            ['form_field_id' => $fileField->id, 'value' => 'pretend.pdf'],
+        ],
+    ], ['Accept' => 'application/json'])
+        ->assertUnprocessable();
+
+    $this->assertDatabaseCount('applications', 0);
+});
+
+test('a file question rejects an upload larger than 10 MB', function () {
+    Storage::fake('local');
+    $fileField = FormField::factory()->for($this->field->formSection)
+        ->create(['type' => 'file', 'is_required' => true]);
+
+    $this->post(route('application-invitations.submissions.store', $this->token), [
+        'form_version_id' => $this->formVersion->id,
+        'answers' => [
+            ['form_field_id' => $this->field->id, 'value' => 'Engineer'],
+            ['form_field_id' => $fileField->id, 'file' => UploadedFile::fake()->create('resume.pdf', 10241, 'application/pdf')],
+        ],
+    ], ['Accept' => 'application/json'])
+        ->assertUnprocessable()->assertJsonValidationErrors('answers.1.file');
+
+    $this->assertDatabaseCount('applications', 0);
+});
+
+test('submission rejects more than 50 MB across files before storing any', function () {
+    Storage::fake('local');
+    $answers = [['form_field_id' => $this->field->id, 'value' => 'Engineer']];
+    for ($index = 0; $index < 6; $index++) {
+        $fileField = FormField::factory()->for($this->field->formSection)
+            ->create(['type' => 'file', 'is_required' => false]);
+        $answers[] = [
+            'form_field_id' => $fileField->id,
+            'file' => UploadedFile::fake()->create("document-{$index}.pdf", 9216, 'application/pdf'),
+        ];
+    }
+
+    $this->post(route('application-invitations.submissions.store', $this->token), [
+        'form_version_id' => $this->formVersion->id,
+        'answers' => $answers,
+    ], ['Accept' => 'application/json'])
+        ->assertUnprocessable()->assertJsonValidationErrors('answers');
+
+    $this->assertDatabaseCount('applications', 0);
+    expect(Storage::disk('local')->allFiles())->toBe([]);
 });
 
 test('submission rejects a form version not published and assigned to the invitation job', function () {

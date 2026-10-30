@@ -26,7 +26,12 @@ class ApplicationFormController extends Controller
                 ->select('job_hiring_id', 'form_version_id', 'email')
                 ->firstOrFail();
 
-            $form = FormVersion::with(['formTemplate', 'formSections.formFields.formFieldOptions'])
+            $form = FormVersion::with([
+                'formTemplate',
+                'formSections' => fn ($query) => $query->orderBy('sort_order'),
+                'formSections.formFields' => fn ($query) => $query->orderBy('sort_order'),
+                'formSections.formFields.formFieldOptions' => fn ($query) => $query->orderBy('sort_order'),
+            ])
                 ->whereKey($invitation->form_version_id)
                 ->where('status', 'published')
                 ->whereHas('jobHirings', function ($query) use ($invitation) {

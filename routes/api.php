@@ -18,8 +18,8 @@ use App\Http\Controllers\LocationController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('public/job-hirings')->name('public.job-hirings.')->middleware('throttle:public-job-hirings')->group(function () {
-    Route::get('/', [JobHiringController::class, 'publicIndex'])->name('index');
-    Route::get('{job_hiring}', [JobHiringController::class, 'publicShow'])->name('show');
+    Route::get('/', [JobHiringController::class, 'publicIndex'])->name('hiring-job.index-public');
+    Route::get('{job_hiring}', [JobHiringController::class, 'publicShow'])->name('hiring-job.public-show');
 });
 
 Route::prefix('application-invitations/{token}')->name('application-invitations.')->group(function () {
@@ -33,6 +33,10 @@ Route::prefix('application-invitations/{token}')->name('application-invitations.
 });
 
 Route::middleware(['jao.key', 'jao.hmac', 'web'])->group(function () {
+    Route::post('job-hirings/{job_hiring}/invitations', [ApplicationInvitationController::class, 'store'])
+        ->middleware('throttle:private-invitation-create')
+        ->name('job-hirings.invitations.store');
+
     Route::apiResources([
         'departments' => DepartmentController::class,
         'employment-types' => EmploymentTypeController::class,
@@ -44,9 +48,6 @@ Route::middleware(['jao.key', 'jao.hmac', 'web'])->group(function () {
     Route::apiResource('job-hirings.form-versions', JobFormVersionAssignmentController::class)
         ->only(['index', 'store', 'destroy']);
 
-    Route::post('job-hirings/{job_hiring}/invitations', [ApplicationInvitationController::class, 'store'])
-        ->middleware('throttle:private-invitation-create')
-        ->name('job-hirings.invitations.store');
 
     Route::scopeBindings()->group(function () {
         Route::apiResource('form-templates.form-versions', FormVersionController::class)->shallow();
@@ -63,6 +64,9 @@ Route::middleware(['jao.key', 'jao.hmac', 'web'])->group(function () {
 
         Route::apiResource('applications.application-answers', ApplicationAnswerController::class)
             ->only(['index', 'show']);
+
+        Route::get('applications/{application}/application-answers/{application_answer}/file', [ApplicationAnswerController::class, 'download'])
+            ->name('applications.application-answers.file');
     });
 
     Route::patch('form-sections/{form_section}/position', [FormSectionController::class, 'sectionReorder'])

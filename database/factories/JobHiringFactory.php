@@ -24,7 +24,7 @@ class JobHiringFactory extends Factory
             'title' => $this->faker->jobTitle(),
             'description' => $this->faker->text(),
             'requirements' => $this->faker->text(),
-            'status' => $this->faker->randomElement(['Available', 'Closed', 'Not Available']),
+            'status' => 'draft',
             'published_at' => $this->faker->dateTimeBetween('-1 years', 'now'),
             'closed_at' => $this->faker->dateTimeBetween('now', '+1 years'),
 
